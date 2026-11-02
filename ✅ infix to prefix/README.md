@@ -11,6 +11,9 @@
 ![Tests](https://img.shields.io/badge/Tested-40,000_expressions-brightgreen?style=for-the-badge)
 ![Created](https://img.shields.io/badge/Original_Design-Spring_2022-purple?style=for-the-badge)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23657544-107c10.svg?style=for-the-badge&logo=doi)](https://doi.org/10.5281/zenodo.23657544)
+[![Bangla Documentation](https://img.shields.io/badge/Documentation-Bangla_(README__Bangla.md)-green?style=for-the-badge)](README_Bangla.md)
+[![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Zero_Learning_Curve_(learn__I__P.md)-blueviolet?style=for-the-badge)](learn_I_P.md)
+[![Bangla Tutorial](https://img.shields.io/badge/টিউটোরিয়াল-বাংলা_টিউটোরিয়াল-green?style=for-the-badge)](learn_I_P_Bangla.md)
 
 > **Author:** Ashikur Rahman  
 > **Original Algorithm Designed:** Spring 2022 (Green University of Bangladesh, CSE-104 Lab Report No. 01)  
@@ -379,5 +382,6 @@ This algorithm originated in **Spring 2022** during undergraduate coursework at 
 The project was submitted as **Lab Report No. 01 (Problem 2)** on **December 1, 2022**, where it challenged the traditional textbook reduction (reverse $\rightarrow$ postfix $\rightarrow$ reverse) by proposing a direct backward scan writing in-place to the input array.
 
 - 📑 **Primary Historical Source:** [View Original 2022 University Lab Report & Slides (Google Slides)](https://docs.google.com/presentation/d/1ogiW8eGX2eApdnQU1bEeGhEWsG034DrZ7xZPR5uvhVY/edit?usp=sharing)
+- 🎓 **Beginner Guides:** [English Tutorial (learn_I_P.md)](learn_I_P.md) | [বাংলা টিউটোরিয়াল (learn_I_P_Bangla.md)](learn_I_P_Bangla.md) | [সম্পূর্ণ বাংলা ডকুমেন্টেশন (README_Bangla.md)](README_Bangla.md)
 
 In **2026**, the implementation was refactored for strict production memory safety, standard C conformance, formal mathematical proof, and cross-language portability (C, JS, Python, Java, C#), stress-validated on 40,000 randomized expressions across three independent verification tiers.
