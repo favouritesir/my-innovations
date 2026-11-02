@@ -5,6 +5,8 @@
 ![Language JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?style=for-the-badge&logo=javascript)
 ![Language Python](https://img.shields.io/badge/Language-Python-3776AB?style=for-the-badge&logo=python)
 ![Language Java](https://img.shields.io/badge/Language-Java-ED8B00?style=for-the-badge&logo=openjdk)
+[![Research Paper](https://img.shields.io/badge/Research_Paper-Read_Academic_Paper_(PAPER.md)-red?style=for-the-badge&logo=googlescholar)](PAPER.md)
+[![Preprint PDF](https://img.shields.io/badge/Preprint_PDF-Download_PDF-blueviolet?style=for-the-badge&logo=adobeacrobatreader)](artificial_sort_paper.pdf)
 ![Auxiliary Memory](https://img.shields.io/badge/Auxiliary_Memory-O(1)_Heap-brightgreen?style=for-the-badge)
 ![Recursion Stack](https://img.shields.io/badge/Stack_Depth-O(log_N)_Guaranteed-blue?style=for-the-badge)
 ![Code Length](https://img.shields.io/badge/Code_Length-~35_Lines_Clean-purple?style=for-the-badge)
