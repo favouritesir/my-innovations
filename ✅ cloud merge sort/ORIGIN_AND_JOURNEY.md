@@ -119,4 +119,4 @@ The lessons learned from the 70%–80% successful in-place prototypes (`angleSor
 | **Angle In-Place Prototype** | 70%–80% successful pure in-place swap experiments | [`prototypes/angle_inplace_experiment.js`](prototypes/angle_inplace_experiment.js) |
 | **C Cross-Swap Experiment** | C-based boundary swap trial (`test.c`) | [`prototypes/c_inplace_cross_swap.c`](prototypes/c_inplace_cross_swap.c) |
 | **Queue-Merge Experiment** | Rotational step-merge prototype (`cloudMarge.js`) | [`prototypes/queue_merge_experiment.js`](prototypes/queue_merge_experiment.js) |
-| **Academic Research Paper** | Formal peer-review format paper | [`PAPER.md`](PAPER.md) |
+| **Academic Research Paper** | Formal peer-review format paper | [`paper/PAPER.md`](paper/PAPER.md) |

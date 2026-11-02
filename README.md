@@ -66,7 +66,7 @@ This repository archives original algorithmic contributions designed to solve fo
 
 - **Origin & Provenance:** Conceived in **Spring 2023** during the *Data Structures & Algorithms* semester at the **Department of CSE, Green University of Bangladesh** (Ashikur Rahman).
   - 📄 **Official Preprint (CERN/Zenodo DOI):** [10.5281/zenodo.23665548](https://doi.org/10.5281/zenodo.23665548)
-  - 📑 **Academic Paper:** [Read the full research paper (PAPER.md)](✅%20cloud%20merge%20sort/PAPER.md)
+  - 📑 **Academic Paper:** [Read the full research paper (PAPER.md)](✅%20cloud%20merge%20sort/paper/PAPER.md)
   - 📜 **The Inventor's Journey:** [Behind the scenes: Door-marker traces, in-place trials & breakthroughs](✅%20cloud%20merge%20sort/ORIGIN_AND_JOURNEY.md)
   - 🔬 **Prototype Archive:** [Explore original experimental code (`prototypes/`)](✅%20cloud%20merge%20sort/prototypes/)
 - **The Breakthrough:** Standard textbooks mandate allocating $N$ auxiliary slots with complex dynamic `malloc`/`free` routines and executing 4 loops. Cloud Sort allows the caller to provide a simple overhead `cloud` buffer of size $\lceil N/2 \rceil$. The active slice `arr[l..m]` temporarily ascends to the cloud to vacate ground writing slots, while `arr[m+1..r]` remains directly on the ground in-situ.
@@ -131,12 +131,16 @@ my-innovations/
 │
 └── ✅ cloud merge sort/                # Project 2: Cloud Sort (Overhead-Buffer In-Situ)
     ├── README.md                      # Comprehensive theory, benchmarks & embedded analysis
-    ├── PAPER.md                       # Formal academic research paper (peer-review format)
     ├── ORIGIN_AND_JOURNEY.md          # Behind the scenes: Door-marker traces & inventor's journey
     ├── learnCS.md                     # Zero-learning curve tutorial (English)
     ├── learnCS_Bangla.md              # জিরো লার্নিং কার্ভ বাংলা টিউটোরিয়াল
     ├── cloud_merge_sort.c             # Pure Cloud Sort in C (Reference, caller-buffer model)
     ├── standard_merge_sort.c          # Pure Standard Merge Sort in C (Canonical comparison)
+    │
+    ├── paper/                         # Formal Academic Research Paper & Builds
+    │   ├── PAPER.md                   # Formal peer-review format paper (English)
+    │   ├── cloud_sort_paper.tex       # IEEE-style LaTeX source file
+    │   └── build_pdf.py               # Automated PDF compiler script
     │
     ├── prototypes/                    # Precursor in-place & rotational experimental archive
     │   ├── angle_inplace_experiment.js# Early ~70-80% in-place swap experiment (angleSort)
@@ -160,6 +164,10 @@ my-innovations/
     ├── ORIGIN_AND_JOURNEY.md          # ক্লাউড কম্পিউটিং যুগ থেকে হোলি গ্রেইল অন্বেষণের ইতিহাস
     ├── learnAS.md                     # Zero-learning curve tutorial (English)
     ├── learnAS_Bangla.md              # জিরো লার্নিং কার্ভ বাংলা টিউটোরিয়াল
+    │
+    ├── paper/                         # Formal Academic Research Paper & Builds
+    │   ├── PAPER.md                   # Formal peer-review format paper (English)
+    │   └── build_pdf.py               # Automated PDF compiler script
     │
     ├── implementations/               # Idiomatic multi-language implementations
     │   ├── artificial_sort.c          # Pure reference C implementation

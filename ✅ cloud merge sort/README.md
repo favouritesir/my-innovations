@@ -10,7 +10,7 @@
 ![Arduino Uno](https://img.shields.io/badge/Hardware-Arduino_Uno_Verified-teal?style=for-the-badge&logo=arduino)
 ![Energy Saving](https://img.shields.io/badge/IoT_Energy-25%25_Less_Bus_Writes-orange?style=for-the-badge)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23665548.svg)](https://doi.org/10.5281/zenodo.23665548)
-[![Research Paper](https://img.shields.io/badge/Research_Paper-Read_Academic_Paper-red?style=for-the-badge&logo=googlescholar)](PAPER.md)
+[![Research Paper](https://img.shields.io/badge/Research_Paper-Read_Academic_Paper-red?style=for-the-badge&logo=googlescholar)](paper/PAPER.md)
 [![Origin & Journey](https://img.shields.io/badge/The_Journey-Behind_The_Invention-blueviolet?style=for-the-badge&logo=bookmeter)](ORIGIN_AND_JOURNEY.md)
 [![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Zero_Learning_Curve_(learnCS.md)-blueviolet?style=for-the-badge&logo=readme)](learnCS.md)
 [![Bangla Tutorial](https://img.shields.io/badge/টিউটোরিয়াল-বাংলা_টিউটোরিয়াল-green?style=for-the-badge)](learnCS_Bangla.md)
@@ -18,7 +18,7 @@
 > **Author:** Ashikur Rahman  
 > **Original Conception:** Spring 2023 (Department of Computer Science & Engineering, Green University of Bangladesh)  
 > **Preprint DOI:** [10.5281/zenodo.23665548](https://doi.org/10.5281/zenodo.23665548)  
-> **Full Academic Paper:** [Read the peer-review format paper (PAPER.md)](PAPER.md)  
+> **Full Academic Paper:** [Read the peer-review format paper (paper/PAPER.md)](paper/PAPER.md)  
 > **The Story & Failed Prototypes:** [Read the behind-the-scenes engineering journey (ORIGIN_AND_JOURNEY.md)](ORIGIN_AND_JOURNEY.md)  
 > 👉 **[New to Cloud Sort? Read the Beginner Tutorial (learnCS.md) &raquo;](learnCS.md)**  
 > 🌐 **[বাংলায় ক্লাউড সর্ট শিখতে এখানে ক্লিক করুন (learnCS_Bangla.md) &raquo;](learnCS_Bangla.md)**  
