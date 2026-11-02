@@ -12,12 +12,16 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23665548.svg)](https://doi.org/10.5281/zenodo.23665548)
 [![Research Paper](https://img.shields.io/badge/Research_Paper-Read_Academic_Paper-red?style=for-the-badge&logo=googlescholar)](PAPER.md)
 [![Origin & Journey](https://img.shields.io/badge/The_Journey-Behind_The_Invention-blueviolet?style=for-the-badge&logo=bookmeter)](ORIGIN_AND_JOURNEY.md)
+[![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Zero_Learning_Curve_(learnCS.md)-blueviolet?style=for-the-badge&logo=readme)](learnCS.md)
+[![Bangla Tutorial](https://img.shields.io/badge/টিউটোরিয়াল-বাংলা_টিউটোরিয়াল-green?style=for-the-badge)](learnCS_Bangla.md)
 
 > **Author:** Ashikur Rahman  
 > **Original Conception:** Spring 2023 (Department of Computer Science & Engineering, Green University of Bangladesh)  
 > **Preprint DOI:** [10.5281/zenodo.23665548](https://doi.org/10.5281/zenodo.23665548)  
 > **Full Academic Paper:** [Read the peer-review format paper (PAPER.md)](PAPER.md)  
 > **The Story & Failed Prototypes:** [Read the behind-the-scenes engineering journey (ORIGIN_AND_JOURNEY.md)](ORIGIN_AND_JOURNEY.md)  
+> 👉 **[New to Cloud Sort? Read the Beginner Tutorial (learnCS.md) &raquo;](learnCS.md)**  
+> 🌐 **[বাংলায় ক্লাউড সর্ট শিখতে এখানে ক্লিক করুন (learnCS_Bangla.md) &raquo;](learnCS_Bangla.md)**  
 > **Core Philosophy:** Modernizing undergraduate sorting pedagogy by challenging legacy textbook memory waste. Replaces complex dynamic heap allocations with an overhead caller-provided floating `cloud` buffer of size $\lceil N/2 \rceil$.
 
 ---
@@ -225,7 +229,7 @@ To measure exact real-world execution speeds, all four algorithms were subjected
 | **$N = 50{,}000$** | **$8.125\text{ ms}$** | $9.158\text{ ms}$ | $5.107\text{ ms}$ | $15.622\text{ ms}$ | **1.13x Faster (+11.3%)** |
 | **$N = 100{,}000$** | **$15.466\text{ ms}$** | $17.524\text{ ms}$ | $9.804\text{ ms}$ | $28.583\text{ ms}$ | **1.13x Faster (+11.7%)** |
 
-> 📌 **Key Insight (V8 Engine):** Cloud Sort is **11% to 67% faster** than textbook Standard Merge Sort and **nearly 2x faster** than V8's native TimSort on random arrays, while using half the auxiliary memory of Standard Merge.
+> 📌 **Key Insight (V8 Engine):** Cloud Sort is **11% to 67% faster** than textbook Standard Merge Sort and faster than V8's native TimSort on random arrays (largely because V8's `Array.prototype.sort((a,b)=>a-b)` incurs JavaScript comparator callback overhead per pair, whereas monomorphic loop-based algorithms avoid function invocation costs), while using half the auxiliary memory of Standard Merge.
 
 ---
 
@@ -331,6 +335,18 @@ In embedded microcontrollers, IoT sensor edge devices, and battery-powered nodes
 ### 1. Memory Survivability & Crash Boundary Table
 *(Deterministic simulation via `tests/test_arduino_benchmark.py`)*
 
+```text
+ARDUINO UNO (ATmega328P) SRAM SURVIVABILITY AT GLANCE (Max Usable SRAM: 1,500 Bytes)
+──────────────────────────────────────────────────────────────────────────────────
+                                                              1,500 B Crash Limit
+Standard Merge (N=350) [████████████████████████████████████████████] 1,544 B 💥 CRASH (OOM)
+Cloud Sort     (N=350) [██████████████████████████████] 1,194 B  (306 B Safe Headroom) ✔️
+                                                                    
+Standard Merge (N=400) [██████████████████████████████████████████████████] 1,744 B 💥 CRASH
+Cloud Sort     (N=400) [██████████████████████████████████████] 1,344 B (156 B Safe Headroom) ✔️
+──────────────────────────────────────────────────────────────────────────────────
+```
+
 | Array Size ($N$) | Standard Merge RAM | Cloud Sort RAM | Absolute RAM Savings | Arduino Uno (Standard Merge) | Arduino Uno (Cloud Sort) |
 | :---: | :---: | :---: | :---: | :---: | :---: |
 | **32 ints** | 224 B | **192 B** | **14.3%** | PASS (1,276 B free) | **PASS (1,308 B headroom)** |
@@ -345,6 +361,15 @@ In embedded microcontrollers, IoT sensor edge devices, and battery-powered nodes
 
 ### 2. 🔋 Power & Energy Dissipation in IoT Edge Devices
 In battery-powered IoT edge sensors (e.g., environmental monitors powered by a CR2032 coin cell with $220\text{ mAh}$ capacity), **power consumption ($P = \alpha C V^2 f$) is directly dictated by memory bus write switching and CPU active duty cycles**:
+
+```text
+PHYSICAL MEMORY BUS WRITE TRAFFIC (N = 10,000 Elements)
+──────────────────────────────────────────────────────────────────────────────────
+Standard Merge : [████████████████████████████████████████] 267,232 Writes (100%)
+Cloud Sort     : [█████████████████████████████] 197,173 Writes (73.8%) 
+                 ⚡ 26.2% Less Physical SRAM Switching Traffic!
+──────────────────────────────────────────────────────────────────────────────────
+```
 
 1. **SRAM Bus Write Energy Reduction (25.0% Less Bus Traffic):**  
    In CMOS SRAM cells, writing a word requires toggling bitlines to ground/rail and driving sense amplifiers, consuming substantially more power than reading or register math.
@@ -426,6 +451,20 @@ Before Cloud Sort succeeded, several alternative ideas were conceived, implement
 
 👉 **[Read the Full Behind-the-Scenes Story in ORIGIN_AND_JOURNEY.md &raquo;](ORIGIN_AND_JOURNEY.md)**  
 📂 **[Explore the Original Prototype Code Archive (`prototypes/`) &raquo;](prototypes/)**
+
+---
+
+## 🔬 Academic Integrity & Responsible AI Disclosure
+
+In accordance with international standards of open-source research and academic transparency (IEEE, ACM, and Nature guidelines):
+
+1. **Original Intellectual Conception (Human Invention):**  
+   The core algorithmic invention—including the asymmetric dual-plane memory model, ascending the left slice $A[l..m]$ to a $\lceil N/2 \rceil$ buffer, the in-situ destination writing on the ground, and the Zero-Move Right Tail property—is **100% the original intellectual creation of Ashikur Rahman** (*Spring 2023, Department of CSE, Green University of Bangladesh*).
+2. **AI-Assisted Engineering Tooling:**  
+   Modern Large Language Model (LLM) agents were utilized as computational accelerators—analogous to compilers, math linters, or research assistants—specifically for:
+   - Developing exhaustive automated stress-testing suites (10,000 differential array fuzzers against V8 and Python TimSort).
+   - Simulating the Arduino Uno (ATmega328P) SRAM memory footprint and CMOS bus write energy metrics.
+   - Formatting and structuring bilingual documentation for international peer review.
 
 ---
 
