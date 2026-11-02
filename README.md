@@ -226,6 +226,26 @@ python tests/test_arduino_benchmark.py
 
 ---
 
+## 🔬 Academic Integrity & Responsible AI Disclosure
+
+In accordance with international open-source research and academic transparency guidelines (IEEE, ACM, and Nature standards):
+
+1. **Human Authorship & Core Novelty:**  
+   All fundamental algorithmic paradigms, architectures, invariants, and mathematical frameworks in this repository—including:
+   - **In-Place Infix to Prefix:** The backward dual-pointer read/write array transformation (Spring 2022).
+   - **Cloud Sort:** The asymmetric overhead-buffer model, the Zero-Move Right Tail property, and the $L_t \le R_t$ invariant (Spring 2023).
+   - **Artificial Sort:** The in-situ half-pass traversal, dynamic artificial buffering, and split-point tail recursion (2024–2026).  
+   
+   —are **100% the original intellectual creation and invention of Ashikur Rahman** (*Department of CSE, Green University of Bangladesh*).
+
+2. **Role of AI as a Tool:**  
+   Modern AI agents and Large Language Models (LLMs) were employed strictly as **computational accelerators and testing tools**—analogous to compilers, math engines, or automated fuzzers. Specifically, AI assisted in:
+   - Generating high-coverage fuzzing test suites (e.g., 40,000 randomized expressions and 10,000 differential array comparisons against native C/V8 TimSort).
+   - Simulating cycle-accurate microcontroller memory profiles (Arduino Uno / ATmega328P SRAM constraints and bus-switching models).
+   - Structuring bilingual documentation, formatting LaTeX/PDF preprints, and streamlining multi-language reference ports.
+
+---
+
 ## 📬 Author & Contact
 
 **Ashikur Rahman**  
