@@ -5,6 +5,8 @@
 ![Language JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?style=for-the-badge&logo=javascript)
 ![Language Python](https://img.shields.io/badge/Language-Python-3776AB?style=for-the-badge&logo=python)
 ![Language Java](https://img.shields.io/badge/Language-Java-ED8B00?style=for-the-badge&logo=openjdk)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0004--4169--8705-A6CE39?style=for-the-badge&logo=orcid)](https://orcid.org/0009-0004-4169-8705)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23902220.svg)](https://doi.org/10.5281/zenodo.23902220)
 [![Research Paper](https://img.shields.io/badge/Research_Paper-Read_Academic_Paper_(PAPER.md)-red?style=for-the-badge&logo=googlescholar)](paper/PAPER.md)
 [![Preprint PDF](https://img.shields.io/badge/Preprint_PDF-Download_PDF-blueviolet?style=for-the-badge&logo=adobeacrobatreader)](paper/artificial_sort_paper.pdf)
 ![Auxiliary Memory](https://img.shields.io/badge/Auxiliary_Memory-O(1)_Heap-brightgreen?style=for-the-badge)
@@ -14,7 +16,7 @@
 [![English Documentation](https://img.shields.io/badge/Documentation-English_(README.md)-blue?style=for-the-badge)](README.md)
 [![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Bangla_Beginner_Guide-green?style=for-the-badge)](learnAS_Bangla.md)
 
-> **উদ্ভাবক ও গবেষক:** আশিকুর রহমান  
+> **উদ্ভাবক ও গবেষক:** আশিকুর রহমান (ORCID: [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705))  
 > **প্রতিষ্ঠান:** কম্পিউটার সায়েন্স অ্যান্ড ইঞ্জিনিয়ারিং বিভাগ (CSE), গ্রিন ইউনিভার্সিটি অব বাংলাদেশ  
 > **প্যারাডাইম:** ডিভাইড অ্যান্ড কনকার উইথ ইন-সিটু হাফ-পাস ডুয়াল-স্ট্রিম আর্টিফিশিয়াল বাফারিং  
 > **মেমোরি মডেল:** পিওর ইন-প্লেস ($O(1)$ অক্সিলিয়ারি হিপ মেমোরি, শূন্য ডায়নামিক `malloc`)  

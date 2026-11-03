@@ -1,11 +1,13 @@
 # Cloud Sort: An Overhead Caller-Buffer Merge Paradigm with Zero Dynamic Allocations, 25% Bus Write Reduction, and Strict In-Situ Stability
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23665548.svg)](https://doi.org/10.5281/zenodo.23665548)
+[![ORCID: 0009-0004-4169-8705](https://img.shields.io/badge/ORCID-0009--0004--4169--8705-A6CE39.svg)](https://orcid.org/0009-0004-4169-8705)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 **Ashikur Rahman**  
 Department of Computer Science and Engineering  
 Green University of Bangladesh  
+*ORCID:* [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705)  
 *Email:* ashikur.gub@gmail.com  
 *Conceived:* Spring 2023 | *Published:* October 2026  
 *Permanent DOI:* [https://doi.org/10.5281/zenodo.23665548](https://doi.org/10.5281/zenodo.23665548)  

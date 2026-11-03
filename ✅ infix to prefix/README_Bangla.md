@@ -9,11 +9,12 @@
 ![Data Structure](https://img.shields.io/badge/Data_Structure-Stack-orange?style=for-the-badge)
 ![Space Complexity](https://img.shields.io/badge/String_Space-O(1)-blue?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tested-40,000_expressions-brightgreen?style=for-the-badge)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0004--4169--8705-A6CE39?style=for-the-badge&logo=orcid)](https://orcid.org/0009-0004-4169-8705)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23657544-107c10.svg?style=for-the-badge&logo=doi)](https://doi.org/10.5281/zenodo.23657544)
 [![English Documentation](https://img.shields.io/badge/Documentation-English_(README.md)-blue?style=for-the-badge)](README.md)
 [![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Bangla_Beginner_Guide-green?style=for-the-badge)](learn_I_P_Bangla.md)
 
-> **উদ্ভাবক ও গবেষক:** আশিকুর রহমান  
+> **উদ্ভাবক ও গবেষক:** আশিকুর রহমান (ORCID: [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705))  
 > **প্রাথমিক নকশা ও উদ্ভাবন:** স্প্রিং ২০২২ (সিএসই বিভাগ, গ্রিন ইউনিভার্সিটি অব বাংলাদেশ; CSE-104 ল্যাব রিপোর্ট নং ০১)  
 > **একাডেমিক প্রিপ্রিন্ট (DOI):** [https://doi.org/10.5281/zenodo.23657544](https://doi.org/10.5281/zenodo.23657544)  
 > **প্রাথমিক ঐতিহাসিক সূত্র:** [২০২২ সালের প্রেজেন্টেশন ও ল্যাব রিপোর্ট (Google Slides)](https://docs.google.com/presentation/d/1ogiW8eGX2eApdnQU1bEeGhEWsG034DrZ7xZPR5uvhVY/edit?usp=sharing)  

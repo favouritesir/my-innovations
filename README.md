@@ -82,6 +82,9 @@ This repository archives original algorithmic contributions designed to solve fo
 *A novel in-situ divide-and-conquer merge sort that achieves $O(1)$ auxiliary heap space using a concise ~35-line directional half-pass loop, dynamic artificial buffering, and split-point tail recursion.*
 
 - **Origin & Conception:** Conceived and refined in **2024–2026** by **Ashikur Rahman** (*Department of CSE, Green University of Bangladesh*).
+  - 📄 **Official Preprint (CERN/Zenodo DOI):** [10.5281/zenodo.23902220](https://doi.org/10.5281/zenodo.23902220)
+  - 📑 **Academic Paper:** [Read the full research paper (PAPER.md)](✅%20artificial%20sort/paper/PAPER.md)
+  - 📜 **The Genesis & Philosophical Odyssey:** [From the Cloud Era to the Artificial Era](✅%20artificial%20sort/ORIGIN_AND_JOURNEY.md)
 - **The Breakthrough:** For over half a century, in-place merging with $O(1)$ extra space required 300 to 500 lines of arcane block-tagging and key extraction (Kronrod, Huang-Langston, SymMerge). Artificial Sort demonstrates that a directional loop across just the left half ($l \le mid$) can naturally partition displaced elements into an artificial queue in the right half, terminating with a clean recursive merge at `split = rp - 1`.
 - **Zero-Allocation Safety:** Demands **0 bytes of auxiliary heap memory**, eliminating Out-Of-Memory (OOM) risks that plague TimSort and standard merge sort on memory-constrained embedded microcontrollers (Arduino, STM32) and high-volume database engines.
 - **Bounded Recursion Stack:** Stack depth is mathematically bounded by $\mathcal{O}(\log N)$ (measuring only 26 frames for 50,000 integers, $< 1 \text{ KB}$), with full tail-call optimization compatibility.
@@ -99,7 +102,7 @@ This repository is continuously expanding with ongoing research and original alg
 | :--- | :--- | :--- | :---: |
 | **In-Place Infix to Prefix** | Compiler Design & Expression Parsing | Dual-pointer backward in-place conversion with $O(1)$ auxiliary string space. | 🏆 Published (DOI: 10.5281/zenodo.23657544) |
 | **Cloud Sort** | Sorting Pedagogy & Embedded Optimization | Overhead-buffer in-situ merge sort with $\lceil N/2 \rceil$ space, zero-malloc simplicity, and zero-move tail. | 🏆 Published (DOI: 10.5281/zenodo.23665548) |
-| **Artificial Sort** | Embedded Sorting & Memory Optimization | In-situ half-pass dual-stream merge sort with $O(1)$ auxiliary heap memory in ~35 lines. | 🏆 Complete & Verified |
+| **Artificial Sort** | Embedded Sorting & Memory Optimization | In-situ half-pass dual-stream merge sort with $O(1)$ auxiliary heap memory in ~35 lines. | 🏆 Published (DOI: 10.5281/zenodo.23902220) |
 | **JSON Boundary Tracker** | High-Throughput Parsing | Zero-copy stream tokenization and lexical boundary detection without AST heap overhead. | 🔬 In Design |
 | **Adaptive In-Place Cache Eviction** | Operating Systems & Caching | Low-overhead pointer-indexed cache replacement for resource-constrained micro-kernels. | 💡 Planned |
 | **Bounded Stack Math Evaluator** | Embedded Firmware | Fixed-depth evaluation of mathematical trees with guaranteed zero-overflow guarantees. | 💡 Planned |
@@ -258,6 +261,7 @@ In accordance with international open-source research and academic transparency 
 
 **Ashikur Rahman**  
 *Computer Systems & Algorithms Researcher / Software Engineer*  
+- **ORCID:** [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705)
 - **GitHub:** [@favouritesir](https://github.com/favouritesir)  
 - **Email:** [ashikur.gub@gmail.com](mailto:ashikur.gub@gmail.com)  
 

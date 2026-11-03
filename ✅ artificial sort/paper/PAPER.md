@@ -1,14 +1,18 @@
 # Artificial Sort: An In-Situ Divide-and-Conquer Sorting Algorithm with $O(1)$ Auxiliary Heap Memory via Half-Pass Traversal and Dynamic In-Stream Buffering
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23902220.svg)](https://doi.org/10.5281/zenodo.23902220)
+[![ORCID: 0009-0004-4169-8705](https://img.shields.io/badge/ORCID-0009--0004--4169--8705-A6CE39.svg)](https://orcid.org/0009-0004-4169-8705)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Paper Status: Preprint](https://img.shields.io/badge/Status-Academic_Preprint-blue.svg)](PAPER.md)
-[![Implementation: C Reference](https://img.shields.io/badge/Implementation-C99_Reference-00599C.svg)](implementations/artificial_sort.c)
+[![Implementation: C Reference](https://img.shields.io/badge/Implementation-C99_Reference-00599C.svg)](../implementations/artificial_sort.c)
 
 **Ashikur Rahman**  
 Department of Computer Science and Engineering  
 Green University of Bangladesh  
+*ORCID:* [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705)  
 *Email:* ashikur.gub@gmail.com  
 *Conceived & Developed:* 2024–2026 | *Preprint Finalized:* November 2026  
+*Permanent DOI:* [https://doi.org/10.5281/zenodo.23902220](https://doi.org/10.5281/zenodo.23902220)  
 
 ---
 

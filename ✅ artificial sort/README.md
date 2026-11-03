@@ -5,6 +5,8 @@
 ![Language JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?style=for-the-badge&logo=javascript)
 ![Language Python](https://img.shields.io/badge/Language-Python-3776AB?style=for-the-badge&logo=python)
 [![Language Java](https://img.shields.io/badge/Language-Java-ED8B00?style=for-the-badge&logo=openjdk)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0004--4169--8705-A6CE39?style=for-the-badge&logo=orcid)](https://orcid.org/0009-0004-4169-8705)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23902220.svg)](https://doi.org/10.5281/zenodo.23902220)
 [![Research Paper](https://img.shields.io/badge/Research_Paper-Read_Academic_Paper_(PAPER.md)-red?style=for-the-badge&logo=googlescholar)](paper/PAPER.md)
 [![Preprint PDF](https://img.shields.io/badge/Preprint_PDF-Download_PDF-blueviolet?style=for-the-badge&logo=adobeacrobatreader)](paper/artificial_sort_paper.pdf)
 ![Auxiliary Memory](https://img.shields.io/badge/Auxiliary_Memory-O(1)_Heap-brightgreen?style=for-the-badge)
@@ -15,8 +17,9 @@
 [![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Zero_Learning_Curve_(learnAS.md)-blueviolet?style=for-the-badge&logo=readme)](learnAS.md)
 [![Bangla Tutorial](https://img.shields.io/badge/টিউটোরিয়াল-বাংলা_টিউটোরিয়াল-orange?style=for-the-badge)](learnAS_Bangla.md)
 
-> **Author:** Ashikur Rahman  
+> **Author:** Ashikur Rahman (ORCID: [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705))  
 > **Conception & Research:** Department of Computer Science & Engineering, Green University of Bangladesh  
+> **Preprint Permanent DOI:** [10.5281/zenodo.23902220](https://doi.org/10.5281/zenodo.23902220)  
 > **Paradigm:** Divide & Conquer with In-Situ Half-Pass Dual-Stream Artificial Buffering  
 > **Memory Model:** Pure In-Place ($O(1)$ auxiliary heap memory, zero dynamic `malloc`)  
 > **Core Innovation:** A minimalist alternative to complex in-place block-merging algorithms, using a concise ~35-line directional half-pass loop that partitions displaced elements into an artificial queue in the right half, terminating with split-point recursion.  

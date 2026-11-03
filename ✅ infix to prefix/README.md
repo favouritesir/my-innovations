@@ -10,12 +10,13 @@
 ![Space Complexity](https://img.shields.io/badge/String_Space-O(1)-blue?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tested-40,000_expressions-brightgreen?style=for-the-badge)
 ![Created](https://img.shields.io/badge/Original_Design-Spring_2022-purple?style=for-the-badge)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0004--4169--8705-A6CE39?style=for-the-badge&logo=orcid)](https://orcid.org/0009-0004-4169-8705)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23657544-107c10.svg?style=for-the-badge&logo=doi)](https://doi.org/10.5281/zenodo.23657544)
 [![Bangla Documentation](https://img.shields.io/badge/Documentation-Bangla_(README__Bangla.md)-green?style=for-the-badge)](README_Bangla.md)
 [![Zero Learning Curve Tutorial](https://img.shields.io/badge/Tutorial-Zero_Learning_Curve_(learn__I__P.md)-blueviolet?style=for-the-badge)](learn_I_P.md)
 [![Bangla Tutorial](https://img.shields.io/badge/টিউটোরিয়াল-বাংলা_টিউটোরিয়াল-green?style=for-the-badge)](learn_I_P_Bangla.md)
 
-> **Author:** Ashikur Rahman  
+> **Author:** Ashikur Rahman (ORCID: [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705))  
 > **Original Algorithm Designed:** Spring 2022 (Green University of Bangladesh, CSE-104 Lab Report No. 01)  
 > **Academic Preprint (DOI):** [https://doi.org/10.5281/zenodo.23657544](https://doi.org/10.5281/zenodo.23657544)  
 > **Primary Source:** [2022 University Lab Report & Presentation (Google Slides)](https://docs.google.com/presentation/d/1ogiW8eGX2eApdnQU1bEeGhEWsG034DrZ7xZPR5uvhVY/edit?usp=sharing)  
