@@ -7,8 +7,8 @@
 [![Implementation: C Reference](https://img.shields.io/badge/Implementation-C99_Reference-00599C.svg)](../implementations/artificial_sort.c)
 
 **Ashikur Rahman**  
-Department of Computer Science and Engineering  
-Green University of Bangladesh  
+Department of Computer Science and Engineering, Green University of Bangladesh  
+Alor Dishary Ideal School  
 *ORCID:* [0009-0004-4169-8705](https://orcid.org/0009-0004-4169-8705)  
 *Email:* ashikur.gub@gmail.com  
 *Conceived & Developed:* 2024–2026 | *Preprint Finalized:* November 2026  
