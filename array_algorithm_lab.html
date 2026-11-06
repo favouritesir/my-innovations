@@ -1,0 +1,4423 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniLab Studio Pro — Interactive Algorithm & DS Workbench</title>
+  <!-- CodeMirror 5 CDN for Professional Syntax Highlighting & Editing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/dialog/dialog.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/dialog/dialog.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #080d1a;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --border: #334155;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.4);
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --purple: #a855f7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Header Bar */
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      z-index: 50;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .toolbar-grp {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .input-box {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: 'Consolas', monospace;
+      font-size: 0.85rem;
+      width: 250px;
+    }
+
+    .btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #334155;
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary { background: #0284c7; border-color: #38bdf8; }
+    .btn-primary:hover { background: #0369a1; }
+    .btn-success { background: #059669; border-color: #34d399; }
+    .btn-success:hover { background: #047857; }
+    .btn-danger { background: #dc2626; border-color: #f87171; }
+    .btn-danger:hover { background: #b91c1c; }
+
+    /* Action / Thinking Recorder Styles */
+    .recorder-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      color: #94a3b8;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .recorder-badge.recording {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+    .recorder-badge.paused {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.15);
+      color: #fde68a;
+    }
+    .record-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .recording .record-dot {
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+      animation: pulse-dot 1s infinite alternate;
+    }
+    .paused .record-dot {
+      background: #f59e0b;
+      box-shadow: none;
+      animation: none;
+    }
+    @keyframes pulse-dot {
+      0% { transform: scale(0.85); opacity: 0.5; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* Workspace */
+    .workspace {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0; /* let it shrink inside the 100vh body flex column (header height varies) */
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Upper Stage: Array Canvas */
+    .canvas-stage {
+      flex: 1;
+      min-height: 0; /* never let the canvas collapse to 0 / overflow the workspace */
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 25%, #172554 0%, #080d1a 100%);
+    }
+
+    /* Custom Sleek Scrollbars */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 16, 31, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.6);
+    }
+
+    /* Pointer Banner */
+    .pointer-banner {
+      padding: 6px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .pointer-tray {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+      padding: 2px 0;
+      scrollbar-width: none; /* Hide default ugly native scrollbar */
+    }
+    .pointer-tray::-webkit-scrollbar {
+      display: none; /* Hide default native scrollbar */
+    }
+
+    .pointer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      transition: all 0.15s;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .pointer-pill.selected {
+      border-color: #fff;
+      transform: scale(1.08);
+      box-shadow: 0 0 10px rgba(255,255,255,0.7);
+    }
+
+    .pointer-pill .ptr-nav {
+      background: rgba(0,0,0,0.25);
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      margin-left: 2px;
+    }
+    .pointer-pill .ptr-nav:hover { background: rgba(0,0,0,0.5); }
+
+    .pointer-pill .del-btn {
+      font-weight: bold;
+      opacity: 0.6;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .pointer-pill .del-btn:hover { opacity: 1; color: #f87171; }
+
+    /* Array Viewport (Flex-start prevents truncation on zoom) */
+    .board-viewport {
+      flex: 1;
+      min-height: 0;
+      overflow-x: auto; /* horizontal scroll on narrow screens, never breaks page bounds */
+      overflow-y: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 40px;
+    }
+
+    .array-track {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 105px 24px 28px 24px;
+      background: rgba(30, 41, 59, 0.35);
+      border: 1px dashed rgba(71, 85, 105, 0.6);
+      border-radius: 14px;
+      position: relative;
+      margin: auto;
+    }
+
+    .slot-cell {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 52px;
+      z-index: 2;
+    }
+
+    .slot-cell:hover,
+    .slot-cell:focus-within {
+      z-index: 25;
+    }
+
+    .ptr-stack {
+      position: absolute;
+      bottom: 86px;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      z-index: 40;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Elevate pointers when card underneath is comparing or swapping so they NEVER collide */
+    .slot-cell:has(.card-element.comparing) .ptr-stack {
+      transform: translateY(-10px);
+    }
+
+    .slot-cell:has(.card-element.swapping) .ptr-stack {
+      transform: translateY(-22px);
+    }
+
+    /* Draggable Live Pointer Arrow */
+    .live-ptr-arrow {
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #090d16;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.15);
+      cursor: grab;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: auto;
+      z-index: 50;
+    }
+
+    .live-ptr-arrow:active {
+      cursor: grabbing;
+    }
+
+    .live-ptr-arrow::after {
+      content: "▼";
+      font-size: 0.55rem;
+      margin-left: 1px;
+    }
+
+    .live-ptr-arrow.selected {
+      transform: scale(1.18) translateY(-4px);
+      box-shadow: 0 0 16px currentColor;
+    }
+
+    .card-element {
+      width: 52px;
+      height: 54px;
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: grab;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 5;
+    }
+
+    .card-element.drag-over {
+      background: #0284c7;
+      border-color: #fff;
+      transform: scale(0.95);
+    }
+
+    .card-element.swapping {
+      background: #7c3aed !important;
+      border-color: #c084fc !important;
+      z-index: 35 !important;
+    }
+
+    @keyframes landPulse {
+      0% {
+        transform: scale(1.18);
+        box-shadow: 0 0 20px rgba(192, 132, 252, 0.95);
+        border-color: #e879f9;
+      }
+      50% {
+        transform: scale(0.96);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      }
+    }
+    .card-element.landing-pulse {
+      animation: landPulse 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .card-element.comparing {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.8);
+      transform: scale(1.12);
+      z-index: 8;
+    }
+
+    .slot-idx {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.7);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* Floating Draggable Sticky Notes (Window-wide floating) */
+    .floating-note {
+      position: fixed;
+      width: 230px;
+      background: #fef08a;
+      color: #1e293b;
+      border-radius: 8px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      z-index: 9999;
+      border: 1px solid rgba(0,0,0,0.18);
+      cursor: move;
+      user-select: none;
+    }
+
+    .note-header {
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .note-header button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .floating-note textarea {
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+      height: 90px;
+      resize: both;
+      font-family: inherit;
+    }
+
+    /* Resizer Splitter Bars */
+    .resizer-h {
+      height: 7px;
+      background: #0f172a;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      cursor: row-resize;
+      transition: background 0.15s;
+      z-index: 35;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .resizer-h:hover, .resizer-h.resizing {
+      background: var(--accent);
+    }
+    .resizer-h::after {
+      content: "";
+      width: 48px;
+      height: 2px;
+      background: rgba(255,255,255,0.45);
+      border-radius: 2px;
+    }
+
+    .resizer-v {
+      width: 7px;
+      background: #0f172a;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      cursor: col-resize;
+      transition: background 0.15s;
+      z-index: 35;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .resizer-v:hover, .resizer-v.resizing {
+      background: var(--accent);
+    }
+    .resizer-v::after {
+      content: "";
+      width: 2px;
+      height: 48px;
+      background: rgba(255,255,255,0.45);
+      border-radius: 2px;
+    }
+
+    /* Bottom Split Section: Code IDE & Interactive Timeline */
+    .bottom-drawer {
+      height: 310px;
+      min-height: 120px;
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      display: flex;
+      z-index: 30;
+      position: relative;
+    }
+
+    .bottom-drawer.collapsed {
+      height: 34px !important;
+      min-height: 34px !important;
+    }
+
+    /* IDE Section with Gutter & Full-Line Highlighter */
+    .ide-section {
+      width: 55%;
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ide-toolbar {
+      padding: 5px 10px;
+      background: #0b1120;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* CodeMirror IDE Custom Theme & Styling */
+    .editor-wrapper {
+      flex: 1;
+      display: flex;
+      background: #080d1a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .CodeMirror {
+      height: 100%;
+      width: 100%;
+      font-family: 'Consolas', 'Fira Code', 'Monaco', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      background: #080d1a !important;
+    }
+
+    /* CodeMirror Dialog & Search/Replace Custom Style */
+    .CodeMirror-dialog {
+      position: absolute;
+      left: 0; right: 0;
+      background: #0f172a;
+      border-bottom: 1px solid var(--accent);
+      color: #f8fafc;
+      font-family: 'Consolas', monospace;
+      font-size: 0.82rem;
+      padding: 6px 12px;
+      z-index: 200;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .CodeMirror-dialog input {
+      background: #080d1a;
+      border: 1px solid var(--border);
+      color: #38bdf8;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.82rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin: 0 6px;
+    }
+    .CodeMirror-dialog input:focus {
+      border-color: var(--accent);
+    }
+    .CodeMirror-dialog button {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      cursor: pointer;
+      padding: 2px 8px;
+      font-size: 0.78rem;
+      border-radius: 4px;
+      margin: 0 3px;
+    }
+    .CodeMirror-dialog button:hover {
+      background: var(--accent);
+      color: #090e1a;
+    }
+
+    /* Word selection & match-highlighter: light/subtle marker for all other occurrences */
+    .cm-matchhighlight {
+      background-color: rgba(56, 189, 248, 0.22) !important;
+      border-bottom: 1.5px solid rgba(56, 189, 248, 0.6) !important;
+      border-radius: 2px;
+    }
+    .CodeMirror-searching {
+      background-color: rgba(250, 204, 21, 0.35) !important;
+      border-bottom: 2px solid #facc15 !important;
+    }
+
+    .CodeMirror-gutters {
+      background: #0a101f !important;
+      border-right: 1px solid var(--border) !important;
+      width: 52px;
+    }
+
+    .breakpoints {
+      width: 18px;
+    }
+
+    .gutter-breakpoint {
+      width: 16px;
+      color: #ef4444;
+      font-size: 0.85rem;
+      text-align: center;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    /* Fallback Textarea if offline */
+    textarea#codeEditor {
+      width: 100%;
+      height: 100%;
+      background: #080d1a;
+      color: #38bdf8;
+      border: none;
+      outline: none;
+      padding: 10px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.85rem;
+      resize: none;
+      tab-size: 2;
+    }
+
+    /* Active Line Neon Execution Highlight */
+    .cm-executing-line {
+      background: rgba(56, 189, 248, 0.22) !important;
+      border-left: 3px solid #38bdf8 !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Right Pane: Visual Interactive Process Flow & History */
+    .flow-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0b1120;
+    }
+
+    .flow-toolbar {
+      padding: 6px 12px;
+      background: #080d1a;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flow-timeline {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .flow-step-card {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: stepIn 0.2s ease;
+    }
+
+    @keyframes stepIn {
+      from { transform: translateX(10px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .flow-step-card.swap-step { border-left-color: #c084fc; }
+    .flow-step-card.compare-step { border-left-color: #38bdf8; }
+    .flow-step-card.ptr-step { border-left-color: #34d399; }
+    .flow-step-card.bp-step { border-left-color: #f87171; background: #2b181e; }
+
+    .speed-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .speed-ctrl input { width: 70px; }
+
+    /* Right Pane Tab Header */
+    .flow-tab-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: #0b1120;
+      border-bottom: 1px solid var(--border);
+    }
+    .flow-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .flow-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .flow-tab-btn.active {
+      color: var(--accent);
+      background: #1e293b;
+      border-color: var(--border);
+      font-weight: 700;
+    }
+    .tab-badge {
+      background: #334155;
+      color: #94a3b8;
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: 10px;
+    }
+    .flow-tab-btn.active .tab-badge {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+    }
+
+    /* Console Pane & Real DevTools REPL */
+    .console-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #050811;
+      overflow: hidden;
+      position: relative;
+    }
+    .console-sub-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      background: #0a0f1d;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.72rem;
+    }
+    .console-tool-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 2px 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.72rem;
+      transition: all 0.15s;
+    }
+    .console-tool-btn:hover {
+      background: #1e293b;
+      color: #f8fafc;
+      border-color: #334155;
+    }
+    .console-filter-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #060913;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 2px 6px;
+      flex: 1;
+      max-width: 200px;
+    }
+    .console-filter-wrapper input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f8fafc;
+      font-size: 0.72rem;
+      width: 100%;
+      font-family: inherit;
+    }
+    .console-filter-badges {
+      display: flex;
+      gap: 4px;
+    }
+    .c-badge {
+      padding: 1px 6px;
+      border-radius: 9999px;
+      background: #1e293b;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.65rem;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .c-badge:hover { color: #f8fafc; }
+    .c-badge.active {
+      background: #0284c7;
+      color: #fff;
+      font-weight: 600;
+    }
+    .c-badge.error.active { background: #e11d48; }
+    .c-badge.warn.active { background: #d97706; }
+
+    .console-logs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .console-line {
+      display: flex;
+      gap: 8px;
+      word-break: break-all;
+      padding: 2px 4px;
+      border-radius: 3px;
+      align-items: baseline;
+    }
+    .console-line:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .console-time {
+      color: #475569;
+      user-select: none;
+      flex-shrink: 0;
+      font-size: 0.7rem;
+    }
+    .console-return-arrow {
+      color: #64748b;
+      user-select: none;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .console-line.info { color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+    .console-line.log { color: #e2e8f0; }
+    .console-line.warn { color: #facc15; background: rgba(250, 204, 21, 0.07); border-left: 2px solid #eab308; }
+    .console-line.error { color: #f87171; background: rgba(248, 113, 113, 0.09); border-left: 2px solid #ef4444; }
+    .console-line.system { color: #a78bfa; font-style: italic; }
+    .console-line.success { color: #4ade80; }
+    .console-line.input { color: #93c5fd; font-weight: 600; }
+    .console-line.result { color: #e2e8f0; }
+
+    /* Interactive Value Highlighting Tokens */
+    .tok-num { color: #38bdf8; font-weight: 500; }
+    .tok-str { color: #86efac; word-break: break-all; }
+    .tok-bool { color: #f472b6; font-weight: 600; }
+    .tok-null, .tok-undef { color: #94a3b8; font-style: italic; }
+    .tok-fn { color: #67e8f9; font-style: italic; }
+    .tok-key { color: #93c5fd; }
+    .tok-dim { color: #64748b; }
+
+    /* Interactive Collapsible Tree */
+    .console-tree-node {
+      display: inline-block;
+      vertical-align: top;
+      cursor: default;
+    }
+    .tree-toggle {
+      display: inline-block;
+      width: 14px;
+      font-size: 0.65rem;
+      color: #94a3b8;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s;
+    }
+    .tree-preview {
+      cursor: pointer;
+      color: #cbd5e1;
+    }
+    .tree-preview:hover {
+      text-decoration: underline;
+    }
+    .tree-children {
+      margin-left: 14px;
+      border-left: 1px dashed #334155;
+      padding-left: 8px;
+      margin-top: 2px;
+    }
+    .tree-prop-line {
+      display: flex;
+      gap: 6px;
+      padding: 1px 0;
+      line-height: 1.4;
+    }
+
+    /* Console Table */
+    .console-table-container {
+      margin: 4px 0;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    .console-table {
+      border-collapse: collapse;
+      font-size: 0.74rem;
+      background: #090e1a;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      width: 100%;
+    }
+    .console-table th {
+      background: #111827;
+      color: #94a3b8;
+      text-align: left;
+      padding: 4px 8px;
+      border-bottom: 1px solid #1e293b;
+      font-weight: 600;
+    }
+    .console-table td {
+      padding: 3px 8px;
+      border-bottom: 1px solid #1e293b;
+      color: #e2e8f0;
+    }
+    .console-table tr:hover td {
+      background: #1e293b;
+    }
+    .console-table td.idx-col {
+      color: #64748b;
+      font-weight: 600;
+      user-select: none;
+      width: 40px;
+    }
+
+    /* Chrome DevTools In-Stream Unified Prompt */
+    .console-prompt-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 4px;
+      margin-top: 3px;
+      width: 100%;
+    }
+    .console-prompt-symbol {
+      color: #38bdf8;
+      font-family: 'Consolas', monospace;
+      font-weight: 700;
+      font-size: 0.88rem;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .console-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f8fafc;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      padding: 0;
+      caret-color: #38bdf8;
+    }
+
+    /* Pointer Function Badge */
+    .ptr-fn-badge {
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0 4px;
+      border-radius: 3px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      max-width: 65px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Context Menu */
+    .custom-context-menu {
+      position: fixed;
+      z-index: 2000;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 0;
+      min-width: 160px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: none;
+    }
+    .context-menu-item {
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .context-menu-item:hover {
+      background: #1e293b;
+      color: var(--accent);
+    }
+    .context-menu-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 3px 0;
+    }
+
+    /* Form & Input Groups for Array Creator Modal */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .form-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .form-select, .form-input {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+    .form-select:focus, .form-input:focus {
+      border-color: var(--accent);
+    }
+    .preview-box {
+      background: #080d1a;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      max-height: 70px;
+      overflow-y: auto;
+      word-break: break-all;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .modal-box input {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      outline: none;
+      font-family: monospace;
+    }
+
+    /* Mobile / Small Screen Drawer Tabs */
+    .mobile-drawer-tabs {
+      display: none;
+      background: #090e1a;
+      border-bottom: 1px solid var(--border);
+      padding: 4px 8px;
+      gap: 6px;
+      align-items: center;
+      width: 100%;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    .m-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .m-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .m-tab-btn.active {
+      color: var(--accent);
+      background: #1e293b;
+      border-color: var(--border);
+      font-weight: 700;
+    }
+    .m-tab-btn.active .tab-badge {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 900px) {
+      .mobile-drawer-tabs {
+        display: flex;
+      }
+      .bottom-drawer {
+        flex-direction: column;
+        /* viewport-relative cap so the canvas above never collapses on short screens */
+        height: min(380px, 48vh);
+        min-height: 150px;
+      }
+      .resizer-v {
+        display: none !important;
+      }
+      .canvas-stage {
+        min-height: 0;
+      }
+      .board-viewport {
+        padding: 46px 16px;
+      }
+      .array-track {
+        padding: 100px 16px 20px 16px;
+      }
+
+      /* Drawer tab states on small screens */
+      .bottom-drawer.tab-editor .ide-section {
+        display: flex !important;
+        width: 100% !important;
+        flex: 1;
+      }
+      .bottom-drawer.tab-editor .flow-section {
+        display: none !important;
+      }
+
+      .bottom-drawer.tab-timeline .ide-section,
+      .bottom-drawer.tab-console .ide-section {
+        display: none !important;
+      }
+
+      .bottom-drawer.tab-timeline .flow-section,
+      .bottom-drawer.tab-console .flow-section {
+        display: flex !important;
+        width: 100% !important;
+        flex: 1;
+      }
+
+      .bottom-drawer.tab-timeline .flow-tab-header,
+      .bottom-drawer.tab-console .flow-tab-header {
+        display: none !important;
+      }
+
+      /* Top Header & Toolbar responsive adjustments */
+      header {
+        padding: 6px 8px;
+        gap: 6px;
+      }
+      .brand {
+        font-size: 0.88rem;
+      }
+      .toolbar-grp {
+        gap: 4px;
+      }
+      .input-box {
+        padding: 3px 6px;
+      }
+      .input-box input {
+        width: 120px;
+        font-size: 0.78rem;
+      }
+      .flow-toolbar {
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 5px 8px;
+      }
+      .speed-ctrl {
+        flex: 1;
+        min-width: 130px;
+      }
+      .pointer-banner {
+        flex-wrap: wrap;
+        padding: 5px 8px;
+      }
+      .modal-box {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .brand span {
+        font-size: 0.82rem;
+      }
+      .btn {
+        padding: 3px 6px;
+        font-size: 0.7rem;
+      }
+      .card-element {
+        width: 44px;
+        height: 46px;
+        font-size: 0.95rem;
+      }
+      .slot-cell {
+        min-width: 48px;
+      }
+      .bottom-drawer {
+        height: min(340px, 45vh);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Ribbon -->
+  <header>
+    <div class="brand">
+      <span>OmniLab Studio Pro</span>
+    </div>
+
+    <div class="toolbar-grp">
+      <div class="input-box">
+        <span style="font-size: 0.78rem; color: var(--text-muted);">Array:</span>
+        <input type="text" id="arrayInput" value="20, 43, 47, 48, 54, 58, 67, 71, 3, 5, 7, 22, 50, 52, 90, 94">
+      </div>
+      <button class="btn btn-primary" id="btnLoadArray" title="ইনপুটের এরে সরাসরি লোড করুন">🔄 লোড</button>
+      <button class="btn btn-primary" id="btnOpenArrayCreator" style="background: linear-gradient(135deg, #0284c7, #2563eb); border-color: #38bdf8; font-weight: 600;" title="র‍্যান্ডম, সর্টেড ব্লক ও কাস্টম রেঞ্জের পারফেক্ট এরে তৈরি করুন">✨ ক্রিয়েট এরে</button>
+      <button class="btn" id="btnAddNote">📝 + স্টিকি নোট</button>
+    </div>
+
+    <div class="toolbar-grp">
+      <!-- Human Thinking & Action Recorder -->
+      <div class="recorder-badge" id="recorderBadge" title="অ্যাকশন ও থিংকিং রেকর্ড স্ট্যাটাস">
+        <span class="record-dot"></span>
+        <span id="recStatusText">রেকর্ডার অফ</span>
+      </div>
+      <button class="btn btn-danger" id="btnRecordToggle" style="padding: 4px 8px; font-size: 0.76rem;" title="ম্যানুয়াল টেস্ট বা অ্যালগরিদম থিংকিং রেকর্ড শুরু করুন">🔴 রেকর্ড</button>
+      <button class="btn" id="btnRecordPause" style="display: none; padding: 4px 6px; font-size: 0.76rem;" title="রেকর্ডিং পজ / রিজিউম">⏸️ পজ</button>
+      <button class="btn" id="btnRecordStop" style="display: none; padding: 4px 6px; font-size: 0.76rem;" title="রেকর্ডিং বন্ধ করুন">⏹️ স্টপ</button>
+      <button class="btn btn-primary" id="btnRecordExport" style="display: none; padding: 4px 8px; font-size: 0.76rem;" title="AI প্রম্পট ও টেস্ট হিস্ট্রি এক্সপোর্ট করুন">📥 রেকর্ড সেভ</button>
+    </div>
+
+    <div class="toolbar-grp">
+      <button class="btn btn-warning" id="btnResetArrayPointers" title="রান করার পর পরিবর্তিত এরে ও পয়েন্টারসমূহকে শুরুর অবস্থায় দ্রুত ফিরিয়ে আনুন">🔄 এরে ও পয়েন্টার রিসেট</button>
+      <button class="btn" id="btnShortcutsHelp" title="কিবোর্ড শর্টকাট তালিকা (Ctrl+/)">⌨️ শর্টকাট</button>
+      <button class="btn" id="btnUndo">↩️ Undo</button>
+      <button class="btn" id="btnRedo">↪️ Redo</button>
+      <button class="btn" id="btnExport">💾 সেভ</button>
+      <button class="btn" id="btnImport">📂 লোড</button>
+      <input type="file" id="fileInput" accept=".json" style="display: none;">
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <div class="workspace">
+    <!-- Interactive Array Stage -->
+    <div class="canvas-stage" id="canvasStage">
+      
+      <!-- Overhead Pointer Banner with Navigation -->
+      <div class="pointer-banner">
+        <div class="pointer-tray" id="pointerTray">
+          <!-- Dynamic Pointers (Only active/user-defined pointers show) -->
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button class="btn btn-success" id="btnCreatePointer" style="padding: 2px 8px; font-size: 0.74rem;">+ নতুন পয়েন্টার</button>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">কার্ডের ওপর পয়েন্টার ড্র্যাগ করুন অথবা ◀ ▶ বাটন দিয়ে সরান</span>
+        </div>
+      </div>
+
+      <!-- Zoom/Scrollable Board Viewport -->
+      <div class="board-viewport" id="boardViewport" tabindex="0">
+        <div class="array-track" id="arrayTrack">
+          <!-- Dynamically Generated Slots -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Horizontal Resizer Splitter -->
+    <div class="resizer-h" id="resizerH" title="ড্র্যাগ করে ক্যানভাস ও কোড সেকশন রিসাইজ করুন"></div>
+
+    <!-- Bottom Split Section: IDE & Process Flow Map -->
+    <div class="bottom-drawer" id="bottomDrawer">
+      
+      <!-- Mobile / Responsive Unified Drawer Tab Bar -->
+      <div class="mobile-drawer-tabs" id="mobileDrawerTabs">
+        <button class="m-tab-btn active" id="mTabEditor">
+          <span>⚡ কোড এডিটর</span>
+        </button>
+        <button class="m-tab-btn" id="mTabTimeline">
+          <span>📜 হিস্ট্রি</span>
+          <span class="tab-badge" id="mTimelineCount">0</span>
+        </button>
+        <button class="m-tab-btn" id="mTabConsole">
+          <span>💻 কনসোল</span>
+          <span class="tab-badge" id="mConsoleCount">0</span>
+        </button>
+        <button class="btn" id="mBtnClearLogs" style="margin-left: auto; padding: 2px 7px; font-size: 0.7rem;" title="লগ ক্লিয়ার করুন">🧹</button>
+      </div>
+
+      <!-- Left: Code Editor with Breakpoints & Full-Line Highlight -->
+      <div class="ide-section" id="ideSection">
+        <div class="ide-toolbar">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>⚡ অ্যালগরিদম জেএস ইঞ্জিন</span>
+            <div style="display: flex; gap: 3px;">
+              <button class="btn" id="btnEditorFind" style="padding: 1px 7px; font-size: 0.72rem;" title="ফাইন্ড / খুঁজুন (Ctrl+F, Regex সাপোর্টেড: /query/)">🔍 খুঁজুন</button>
+              <button class="btn" id="btnEditorReplace" style="padding: 1px 7px; font-size: 0.72rem;" title="রিপ্লেস / পরিবর্তন করুন (Ctrl+H)">🔄 রিপ্লেস</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 4px;">
+            <button class="btn" id="btnTemplateBubble" style="padding: 1px 6px; font-size: 0.72rem;">Bubble Sort</button>
+            <button class="btn" id="btnTemplateSelect" style="padding: 1px 6px; font-size: 0.72rem;">Selection Sort</button>
+            <button class="btn" id="btnTemplateTwoPtr" style="padding: 1px 6px; font-size: 0.72rem;">Two-Pointer</button>
+            <button class="btn" id="btnToggleDrawer" style="padding: 1px 6px; font-size: 0.72rem;">🔼 টগল</button>
+          </div>
+        </div>
+        <div class="editor-wrapper" id="editorWrapper">
+          <textarea id="codeEditor" spellcheck="false">// 🚀 যে কোনো সাধারণ অ্যালগরিদম পেস্ট করুন!
+// আপনাকে কোনো 'track', 'compare' বা 'swap' কল করতে হবে না!
+// ইঞ্জিন স্বয়ংক্রিয়ভাবে arr[...], swap এবং ভ্যারিয়েবল ডিটেক্ট করে লাইভ পয়েন্টার চালাবে!
+
+let n = arr.length;
+for (let i = 0; i < n; i++) {
+  for (let j = i + 1; j < n; j++) {
+    if (arr[i] > arr[j]) {
+      // সাধারণ সোয়াপ:
+      let temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+  }
+}</textarea>
+        </div>
+      </div>
+
+      <!-- Vertical Resizer Splitter -->
+      <div class="resizer-v" id="resizerV" title="ড্র্যাগ করে কোড এডিটর ও হিস্ট্রি প্যানেল রিসাইজ করুন"></div>
+
+      <!-- Right: Visual Process Flow Map & Interactive Console -->
+      <div class="flow-section" id="flowSection">
+        <!-- Sub-tabs for Timeline / Console -->
+        <div class="flow-tab-header">
+          <button class="flow-tab-btn active" id="tabBtnTimeline">
+            <span>📜 হিস্ট্রি টাইমলাইন</span>
+            <span class="tab-badge" id="timelineCount">0</span>
+          </button>
+          <button class="flow-tab-btn" id="tabBtnConsole">
+            <span>💻 কনসোল</span>
+            <span class="tab-badge" id="consoleCount">0</span>
+          </button>
+          <button class="btn" id="btnClearLogs" style="margin-left: auto; padding: 2px 7px; font-size: 0.7rem;" title="লগ বা হিস্ট্রি ক্লিয়ার করুন">🧹 ক্লিয়ার</button>
+        </div>
+
+        <div class="flow-toolbar">
+          <button class="btn btn-primary" id="btnRun">▶️ রান</button>
+          <button class="btn" id="btnPause">⏸️ পজ</button>
+          <button class="btn" id="btnStepBack" title="এক স্টেপ পিছনে যান (টাইম ট্রাভেল)">⏮️ পিছনের স্টেপ</button>
+          <button class="btn" id="btnStep" title="এক স্টেপ সামনে যান">⏭️ এক স্টেপ</button>
+          <button class="btn btn-danger" id="btnStop">⏹️ থামাও</button>
+          
+          <div class="speed-ctrl" title="অ্যালগরিদম স্টেপ এক্সিকিউশন স্পিড">
+            <span>স্টেপ গতি:</span>
+            <input type="range" id="speedSlider" min="40" max="1200" value="350">
+          </div>
+
+          <div class="speed-ctrl" title="কার্ড সোয়াপ ও ফিজিক্স আর্কিং এনিমেশন স্পিড">
+            <span>সোয়াপ গতি:</span>
+            <input type="range" id="swapSpeedSlider" min="80" max="900" value="320">
+            <span id="swapSpeedVal" style="font-size: 0.68rem; color: #38bdf8; min-width: 38px;">320ms</span>
+          </div>
+        </div>
+
+        <!-- History Timeline View -->
+        <div class="flow-timeline" id="flowTimeline">
+          <div class="flow-step-card">
+            <span>🏁 OmniLab Pro প্রস্তুত। পয়েন্টার ড্র্যাগ করুন বা কোড রান করুন।</span>
+          </div>
+        </div>
+
+        <!-- Interactive Developer Console View -->
+        <div class="console-pane" id="consolePane" style="display: none;">
+          <!-- DevTools Sub-Toolbar -->
+          <div class="console-sub-toolbar">
+            <button class="console-tool-btn" id="btnDevToolsClear" title="কনসোল ক্লিয়ার করুন (বা টাইপ করুন clear / cls)">
+              <span>🚫 ক্লিয়ার</span>
+            </button>
+            <div class="console-filter-wrapper">
+              <span style="color: #64748b; font-size: 0.7rem;">🔍</span>
+              <input type="text" id="consoleFilterInput" placeholder="ফিল্টার লগ..." autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="console-filter-badges">
+              <span class="c-badge active" data-filter="all">All</span>
+              <span class="c-badge error" data-filter="error">Errors</span>
+              <span class="c-badge warn" data-filter="warn">Warnings</span>
+              <span class="c-badge" data-filter="info">Info</span>
+            </div>
+          </div>
+
+          <!-- Chrome DevTools Style Unified Console Logs & Inline Prompt -->
+          <div class="console-logs" id="consoleLogs">
+            <div class="console-line system" data-level="system">
+              <span class="console-time">[00:00]</span>
+              <span>⚡ DevTools Interactive Console প্রস্তুত। 'arr', 'state', 'swap(0, 1)' বা যেকোনো জাভাস্ক্রিপ্ট কোড রান করুন। (ক্লিয়ার করতে 'clear' বা 'cls' লিখুন)</span>
+            </div>
+            <div class="console-prompt-line" id="consolePromptLine">
+              <span class="console-prompt-symbol">&gt;</span>
+              <input type="text" id="consoleInput" class="console-input" placeholder="JS কোড বা এক্সপ্রেশন লিখুন..." autocomplete="off" spellcheck="false" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal for Custom Pointer (Create / Edit) -->
+  <div class="modal-overlay" id="ptrModal">
+    <div class="modal-box" style="width: 360px;">
+      <h4 style="color: var(--accent); font-size: 0.95rem;" id="ptrModalTitle">নতুন পয়েন্টার তৈরি</h4>
+      <input type="hidden" id="modalPtrOldName" value="">
+      <div class="form-group">
+        <label for="modalPtrName">পয়েন্টার / ভ্যারিয়েবল নাম:</label>
+        <input type="text" id="modalPtrName" placeholder="যেমন: i, j, lp, rp, mid, minIdx" maxlength="15">
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+          <label for="modalPtrIdx">শুরুর ইনডেক্স (0-based):</label>
+          <input type="number" id="modalPtrIdx" value="0" min="0">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="modalPtrFn">স্কোপ টাইপ:</label>
+          <select id="modalPtrFn" class="form-select">
+            <option value="">🌐 গ্লোবাল / ইউনিভার্সাল</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size: 0.68rem; color: var(--text-muted);">
+        💡 ফাংশন সিলেক্ট করলে সেই ফাংশন চলাকালীন ওই প্যারামিটার বা ভ্যারিয়েবলের মান লাইভ ট্র্যাক করবে। আর গ্লোবাল সিলেক্ট করলে গ্লোবাল ভ্যারিয়েবল ট্র্যাক করবে।
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px;">
+        <button class="btn" id="btnCancelModal">বাতিল</button>
+        <button class="btn btn-primary" id="btnConfirmModal">সংরক্ষণ করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Keyboard Shortcuts Cheatsheet -->
+  <div class="modal-overlay" id="shortcutsModal">
+    <div class="modal-box" style="width: 520px; max-width: 95vw;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+        <h4 style="color: var(--accent); font-size: 0.95rem; margin: 0;">⌨️ কিবোর্ড শর্টকাট গাইড (Keyboard Shortcuts)</h4>
+        <button class="btn" id="btnCloseShortcutsModal" style="padding: 2px 6px; font-size: 0.75rem;">✕</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem; max-height: 400px; overflow-y: auto;">
+        
+        <div style="color: #e879f9; font-weight: 700; margin-top: 4px;">🎯 নেভিগেশন ও ফোকাস শর্টকাটস:</div>
+        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 6px; background: #080d1a; padding: 6px 10px; border-radius: 6px;">
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Alt + E / F2</kbd></div>
+          <div>কোড এডিটর ফোকাস (Focus Code Editor)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Alt + C / F3</kbd></div>
+          <div>ক্যানভাস / প্লেগ্রাউন্ড ফোকাস (Focus Canvas Stage)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Alt + K / Ctrl + `</kbd></div>
+          <div>কনসোল REPL ফোকাস (Focus Console REPL)</div>
+        </div>
+
+        <div style="color: #4ade80; font-weight: 700; margin-top: 4px;">🎮 অ্যালগরিদম ও এনিমেশন কন্ট্রোল:</div>
+        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 6px; background: #080d1a; padding: 6px 10px; border-radius: 6px;">
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Space / F5</kbd></div>
+          <div>রান / পজ টগল (Run / Pause)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">F10 / Ctrl + . / ]</kbd></div>
+          <div>এক স্টেপ সামনে এগোনো (Step Forward)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">F9 / Ctrl + , / [</kbd></div>
+          <div>টাইম-ট্রাভেল পিছনের স্টেপ (Step Back)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Shift + F5</kbd></div>
+          <div>এক্সিকিউশন বন্ধ করা (Stop)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Arrow Left / Right</kbd></div>
+          <div>নির্বাচিত পয়েন্টার এক ঘর বামে/ডানে সরানো</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Delete</kbd></div>
+          <div>নির্বাচিত পয়েন্টার মুছে ফেলা</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Ctrl + Z / Ctrl + Y</kbd></div>
+          <div>Undo / Redo (টাইম ট্রাভেল হিস্ট্রি)</div>
+        </div>
+
+        <div style="color: #facc15; font-weight: 700; margin-top: 4px;">📋 ফর্ম ও ডায়ালগ শর্টকাটস:</div>
+        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 6px; background: #080d1a; padding: 6px 10px; border-radius: 6px;">
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Enter</kbd></div>
+          <div>যেকোনো ফর্ম বা মডাল সাবমিট ও সংরক্ষণ</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Escape</kbd></div>
+          <div>যেকোনো মডাল, ডায়ালগ বা কনটেক্সট মেনু বাতিল ও বন্ধ করা</div>
+        </div>
+
+        <div style="color: #38bdf8; font-weight: 700; margin-top: 4px;">⚡ কোড এডিটর শর্টকাটস:</div>
+        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 6px; background: #080d1a; padding: 6px 10px; border-radius: 6px;">
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Ctrl + F</kbd></div>
+          <div>খুঁজুন (Find - রেজেক্সের জন্য /pattern/ লিখুন)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Ctrl + H</kbd></div>
+          <div>রিপ্লেস (Find & Replace)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Ctrl + /</kbd></div>
+          <div>কমেন্ট টগল (Toggle Comment)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Alt + Up / Down</kbd></div>
+          <div>লাইন উপরে / নিচে সরানো (Move Line)</div>
+          <div><kbd style="background:#1e293b; padding:1px 5px; border-radius:3px;">Shift + Alt + Up/Down</kbd></div>
+          <div>লাইন ডুপ্লিকেট করা (Duplicate Line)</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Right-Click Context Menu -->
+  <div class="custom-context-menu" id="customContextMenu">
+    <div class="context-menu-item" id="ctxAddPointer">📍 এখানে নতুন পয়েন্টার তৈরি করুন</div>
+    <div class="context-menu-item" id="ctxEditValue">✏️ কার্ডের মান এডিট করুন</div>
+    <div class="context-menu-sep"></div>
+    <div class="context-menu-item" id="ctxMoveSelectedHere">👉 নির্বাচিত পয়েন্টার এখানে আনুন</div>
+    <div class="context-menu-sep"></div>
+    <div class="context-menu-item" id="ctxResetPointers">🔄 সব পয়েন্টার রিসেট করুন</div>
+  </div>
+
+  <!-- Modal for Advanced Array Creator Studio -->
+  <div class="modal-overlay" id="arrayCreatorModal">
+    <div class="modal-box" style="width: 460px; max-width: 95vw; gap: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+        <h4 style="color: var(--accent); font-size: 0.95rem; margin: 0; display: flex; align-items: center; gap: 6px;">
+          <span>✨ পারফেক্ট এরে ক্রিয়েটর স্টুডিও</span>
+        </h4>
+        <button class="btn" id="btnCloseCreatorModal" style="padding: 2px 6px; font-size: 0.75rem;">✕</button>
+      </div>
+
+      <!-- Mode Selector Dropdown -->
+      <div class="form-group">
+        <label for="creatorMode">ক্রিয়েশন মোড (Generation Mode):</label>
+        <select id="creatorMode" class="form-select">
+          <option value="blocks">🧩 সর্টেড ব্লক এরে (Sorted Block Partitions - e.g. 2 blocks of 16/17)</option>
+          <option value="random">🎲 Random Uniform (সম্পূর্ণ র‍্যান্ডম)</option>
+          <option value="alreadySorted">📈 Already Sorted (আগে থেকেই সর্টেড)</option>
+          <option value="reverseSorted">📉 Reverse Sorted (বড় থেকে ছোট সর্টেড)</option>
+          <option value="heavyDuplicates">👯 Heavy Duplicates (প্রচুর ডুপ্লিকেট সহ)</option>
+          <option value="nearlySorted">📊 Nearly Sorted (95%) (সামান্য ইনভার্সন সহ)</option>
+          <option value="sawtooth">⚡ Sawtooth Runs (করাতের দাঁতের মতো উত্থান-পতন)</option>
+        </select>
+      </div>
+
+      <!-- Universal Range & Source Inputs (Applies to all modes) -->
+      <div class="form-group">
+        <label>সংখ্যার সোর্স ও রেঞ্জ (Universal Range Definition):</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="creatorRangeType" class="form-select" style="width: 145px;">
+            <option value="minMax">Min - Max বাউন্ড</option>
+            <option value="customSyntax">কাস্টম রেঞ্জ সিনট্যাক্স</option>
+          </select>
+          <div id="creatorMinMaxRow" class="form-row" style="flex: 1;">
+            <input type="number" id="creatorMinVal" class="form-input" value="1" placeholder="Min" style="width: 50%;">
+            <input type="number" id="creatorMaxVal" class="form-input" value="99" placeholder="Max" style="width: 50%;">
+          </div>
+          <div id="creatorCustomSyntaxRow" style="flex: 1; display: none;">
+            <input type="text" id="creatorRangePattern" class="form-input" value="1-5, 7, 6, 10-12" placeholder="উদা: 1-5, 7, 6, 10-12" style="width: 100%;">
+          </div>
+        </div>
+        <span style="font-size: 0.68rem; color: var(--text-muted);" id="creatorRangeHint">উপাদানসমূহ Min এবং Max এর মধ্যবর্তী সংখ্যা হতে উৎপন্ন হবে।</span>
+      </div>
+
+      <!-- Option Controls: Size & Partition Blocks -->
+      <div id="creatorBlockOptions" style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="creatorTotalSize">মোট উপাদান সংখ্যা (Total Size):</label>
+            <input type="number" id="creatorTotalSize" class="form-input" value="16" min="2" max="100">
+          </div>
+          <div class="form-group" style="flex: 1;" id="creatorNumBlocksGroup">
+            <label for="creatorNumBlocks">ব্লক সংখ্যা (Blocks):</label>
+            <input type="number" id="creatorNumBlocks" class="form-input" value="2" min="1" max="10">
+          </div>
+        </div>
+
+        <div class="form-row" id="creatorBlockOrderGroup">
+          <div class="form-group" style="flex: 1;">
+            <label for="creatorBlockOrder">প্রতিটি ব্লকের ক্রম (Block Sorting):</label>
+            <select id="creatorBlockOrder" class="form-select">
+              <option value="asc">ছোট থেকে বড় (Ascending 1, 2, 3...)</option>
+              <option value="desc">বড় থেকে ছোট (Descending 9, 8, 7...)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Array Modifiers -->
+      <div style="background: #090e1a; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: #94a3b8;">পোস্ট-প্রসেসিং ও অতিরিক্ত অপশন:</span>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <label style="font-size: 0.75rem; color: #e2e8f0; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+            <input type="checkbox" id="creatorAllowDuplicates" checked> ডুপ্লিকেট সংখ্যা রাখা যাবে
+          </label>
+          <label style="font-size: 0.75rem; color: #e2e8f0; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+            <input type="checkbox" id="creatorReverse"> সম্পূর্ণ এরে উল্টে দেওয়া (Reverse)
+          </label>
+        </div>
+      </div>
+
+      <!-- Live Generated Array Preview -->
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label>লাইভ প্রিভিউ (Live Preview):</label>
+          <button class="btn" id="btnRegeneratePreview" style="padding: 1px 6px; font-size: 0.68rem;">🎲 নতুন প্রিভিউ</button>
+        </div>
+        <div class="preview-box" id="creatorLivePreview">...</div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+        <button class="btn" id="btnCancelCreatorModal">বাতিল</button>
+        <button class="btn btn-primary" id="btnApplyCreatedArray" style="background: linear-gradient(135deg, #0284c7, #2563eb);">🚀 এরে তৈরি ও লোড করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * OmniLab Pro Core Architecture
+     */
+    const PALETTE = ['#38bdf8', '#4ade80', '#c084fc', '#facc15', '#f87171', '#fb923c', '#2dd4bf', '#e879f9'];
+
+    const state = {
+      arr: [20, 43, 47, 48, 54, 58, 67, 71, 3, 5, 7, 22, 50, 52, 90, 94],
+      pointers: {
+        i: { index: 0, color: '#38bdf8' },
+        j: { index: 1, color: '#4ade80' }
+      },
+      selectedPointer: 'i',
+      preRunSnapshot: null, // Stores manual positions before code execution
+      notes: [],
+      breakpoints: new Set(),
+      activeExecLine: null,
+      history: [],
+      redoStack: [],
+      // Stepper & Async Player
+      isRunning: false,
+      isPaused: false,
+      stepResolver: null,
+      delayMs: 350,
+      swapDurationMs: 320,
+      // Human Action / Thinking Trace Recorder
+      recorder: {
+        isRecording: false,
+        isPaused: false,
+        startTime: null,
+        totalPausedMs: 0,
+        pauseStartTime: null,
+        initialState: null,
+        actions: []
+      }
+    };
+
+    // Shared Context Target Index for Custom Right-Click Menu
+    let contextTargetIndex = null;
+
+    // DOM Elements
+    const arrayTrack = document.getElementById('arrayTrack');
+    const pointerTray = document.getElementById('pointerTray');
+    const editorGutter = document.getElementById('editorGutter');
+    const codeEditor = document.getElementById('codeEditor');
+    const lineHighlightBar = document.getElementById('lineHighlightBar');
+    const flowTimeline = document.getElementById('flowTimeline');
+    const canvasStage = document.getElementById('canvasStage');
+    const speedSlider = document.getElementById('speedSlider');
+    // NOTE: bottomDrawer is declared HERE (not late inside the init block) so that
+    // activateDrawerTab() can safely use it at any viewport width without hitting a
+    // temporal-dead-zone ReferenceError that would abort the rest of the init script.
+    const bottomDrawer = document.getElementById('bottomDrawer');
+    const contextMenuEl = document.getElementById('customContextMenu');
+
+    /** Close the custom right-click context menu (if open). */
+    function closeContextMenu() {
+      if (contextMenuEl) contextMenuEl.style.display = 'none';
+    }
+
+    /**
+     * Show the custom context menu at (x, y) for the given slot index,
+     * clamped so the menu never clips off-screen.
+     */
+    function showContextMenu(x, y, idx) {
+      contextTargetIndex = (typeof idx === 'number' && !isNaN(idx)) ? idx : null;
+      if (!contextMenuEl) return;
+      contextMenuEl.style.display = 'block';
+      const mWidth = contextMenuEl.offsetWidth || 200;
+      const mHeight = contextMenuEl.offsetHeight || 170;
+      const posX = Math.min(window.innerWidth - mWidth - 8, Math.max(8, x));
+      const posY = Math.min(window.innerHeight - mHeight - 8, Math.max(8, y));
+      contextMenuEl.style.left = `${posX}px`;
+      contextMenuEl.style.top = `${posY}px`;
+    }
+
+    function saveSnapshot(desc) {
+      state.history.push({
+        arr: [...state.arr],
+        pointers: JSON.parse(JSON.stringify(state.pointers)),
+        notes: JSON.parse(JSON.stringify(state.notes)),
+        desc
+      });
+      state.redoStack = [];
+      if (desc) logStep(desc, 'generic');
+    }
+
+    /**
+     * Action & Thinking Trace Recording Engine
+     */
+    function recordAction(actionType, details, description) {
+      if (!state.recorder.isRecording || state.recorder.isPaused) return;
+
+      const elapsedMs = Date.now() - state.recorder.startTime - state.recorder.totalPausedMs;
+      const sec = (elapsedMs / 1000).toFixed(1);
+
+      const recordItem = {
+        step: state.recorder.actions.length + 1,
+        time: `${sec}s`,
+        type: actionType,
+        desc: description,
+        details,
+        pointersSnapshot: JSON.parse(JSON.stringify(state.pointers)),
+        arrSnapshot: [...state.arr]
+      };
+
+      state.recorder.actions.push(recordItem);
+      updateRecorderUI();
+    }
+
+    function updateRecorderUI() {
+      const badge = document.getElementById('recorderBadge');
+      const text = document.getElementById('recStatusText');
+      const btnToggle = document.getElementById('btnRecordToggle');
+      const btnPause = document.getElementById('btnRecordPause');
+      const btnStop = document.getElementById('btnRecordStop');
+      const btnExport = document.getElementById('btnRecordExport');
+
+      if (!state.recorder.isRecording) {
+        badge.className = 'recorder-badge';
+        text.innerText = 'রেকর্ডার অফ';
+        btnToggle.style.display = 'inline-flex';
+        btnToggle.innerText = '🔴 রেকর্ড';
+        btnToggle.className = 'btn btn-danger';
+        btnPause.style.display = 'none';
+        btnStop.style.display = 'none';
+        btnExport.style.display = state.recorder.actions.length > 0 ? 'inline-flex' : 'none';
+      } else if (state.recorder.isPaused) {
+        badge.className = 'recorder-badge paused';
+        text.innerText = `⏸️ পজ (${state.recorder.actions.length} স্টেপ)`;
+        btnToggle.style.display = 'none';
+        btnPause.style.display = 'inline-flex';
+        btnPause.innerText = '▶️ রিজিউম';
+        btnStop.style.display = 'inline-flex';
+        btnExport.style.display = 'inline-flex';
+      } else {
+        badge.className = 'recorder-badge recording';
+        text.innerText = `🔴 রেকর্ডিং... (${state.recorder.actions.length} স্টেপ)`;
+        btnToggle.style.display = 'none';
+        btnPause.style.display = 'inline-flex';
+        btnPause.innerText = '⏸️ পজ';
+        btnStop.style.display = 'inline-flex';
+        btnExport.style.display = 'inline-flex';
+      }
+    }
+
+    let timelineEntryCount = 0;
+    let consoleEntryCount = 0;
+
+    function logStep(msg, type = 'generic') {
+      timelineEntryCount++;
+      const badge = document.getElementById('timelineCount');
+      if (badge) badge.innerText = timelineEntryCount;
+      const mBadge = document.getElementById('mTimelineCount');
+      if (mBadge) mBadge.innerText = timelineEntryCount;
+
+      const card = document.createElement('div');
+      card.className = `flow-step-card ${type}-step`;
+      card.innerHTML = `<span>${msg}</span><span style="font-size:0.65rem; color:#64748b;">${new Date().toLocaleTimeString()}</span>`;
+      flowTimeline.appendChild(card);
+      flowTimeline.scrollTop = flowTimeline.scrollHeight;
+
+      // Note: Do not pollute developer console with internal animation steps like "Initial State" or "Drag Pointer".
+      // Console remains dedicated for explicit user interaction, console.log/table/warn/error, and REPL evaluations.
+    }
+
+    /**
+     * DevTools Interactive Object & Value DOM Formatter
+     */
+    function formatConsoleValueDOM(val, depth = 0) {
+      if (val === null) {
+        const span = document.createElement('span');
+        span.className = 'tok-null';
+        span.innerText = 'null';
+        return span;
+      }
+      if (val === undefined) {
+        const span = document.createElement('span');
+        span.className = 'tok-undef';
+        span.innerText = 'undefined';
+        return span;
+      }
+      if (typeof val === 'number') {
+        const span = document.createElement('span');
+        span.className = 'tok-num';
+        span.innerText = String(val);
+        return span;
+      }
+      if (typeof val === 'boolean') {
+        const span = document.createElement('span');
+        span.className = 'tok-bool';
+        span.innerText = String(val);
+        return span;
+      }
+      if (typeof val === 'string') {
+        const span = document.createElement('span');
+        span.className = 'tok-str';
+        span.innerText = depth === 0 ? val : `"${val}"`;
+        return span;
+      }
+      if (typeof val === 'function') {
+        const span = document.createElement('span');
+        span.className = 'tok-fn';
+        span.innerText = `ƒ ${val.name || 'anonymous'}()`;
+        return span;
+      }
+
+      // Arrays and Objects - Interactive Collapsible Tree
+      if (typeof val === 'object') {
+        const isArr = Array.isArray(val);
+        const container = document.createElement('div');
+        container.className = 'console-tree-node';
+
+        const header = document.createElement('span');
+        const arrow = document.createElement('span');
+        arrow.className = 'tree-toggle';
+        arrow.innerText = '▶';
+
+        const preview = document.createElement('span');
+        preview.className = 'tree-preview';
+
+        const keys = Object.keys(val);
+        if (isArr) {
+          preview.innerHTML = `<span class="tok-dim">(${val.length})</span> [${val.slice(0, 8).map(x => typeof x === 'string' ? `"${x}"` : String(x)).join(', ')}${val.length > 8 ? ', …' : ''}]`;
+        } else {
+          const previewKeys = keys.slice(0, 4).map(k => `${k}: ${typeof val[k] === 'object' ? '{…}' : val[k]}`).join(', ');
+          preview.innerHTML = `{ ${previewKeys}${keys.length > 4 ? ', …' : ''} }`;
+        }
+
+        header.appendChild(arrow);
+        header.appendChild(preview);
+        container.appendChild(header);
+
+        let childrenRendered = false;
+        let childrenBox = null;
+
+        header.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!childrenBox) {
+            childrenBox = document.createElement('div');
+            childrenBox.className = 'tree-children';
+            container.appendChild(childrenBox);
+          }
+
+          if (childrenBox.style.display === 'none' || !childrenRendered) {
+            if (!childrenRendered) {
+              keys.forEach(k => {
+                const line = document.createElement('div');
+                line.className = 'tree-prop-line';
+                const keySpan = document.createElement('span');
+                keySpan.className = 'tok-key';
+                keySpan.innerText = `${k}: `;
+                line.appendChild(keySpan);
+                line.appendChild(formatConsoleValueDOM(val[k], depth + 1));
+                childrenBox.appendChild(line);
+              });
+              if (isArr) {
+                const lenLine = document.createElement('div');
+                lenLine.className = 'tree-prop-line';
+                lenLine.innerHTML = `<span class="tok-key">length:</span> <span class="tok-num">${val.length}</span>`;
+                childrenBox.appendChild(lenLine);
+              }
+              childrenRendered = true;
+            }
+            childrenBox.style.display = 'block';
+            arrow.innerText = '▼';
+          } else {
+            childrenBox.style.display = 'none';
+            arrow.innerText = '▶';
+          }
+        });
+
+        return container;
+      }
+
+      const span = document.createElement('span');
+      span.innerText = String(val);
+      return span;
+    }
+
+    /**
+     * Render Console Table (like Chrome DevTools console.table)
+     */
+    function renderConsoleTable(data) {
+      if (!data || typeof data !== 'object') {
+        logConsole(data);
+        return;
+      }
+      const container = document.createElement('div');
+      container.className = 'console-table-container';
+
+      const table = document.createElement('table');
+      table.className = 'console-table';
+
+      const isArr = Array.isArray(data);
+      const rows = isArr ? data : Object.entries(data);
+
+      if (isArr && (data.length === 0 || typeof data[0] !== 'object' || data[0] === null)) {
+        // Simple 1D Array Table
+        table.innerHTML = `<thead><tr><th class="idx-col">(index)</th><th>Value</th></tr></thead><tbody></tbody>`;
+        const tbody = table.querySelector('tbody');
+        data.forEach((item, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td class="idx-col">${idx}</td><td>${item === undefined ? 'undefined' : JSON.stringify(item)}</td>`;
+          tbody.appendChild(tr);
+        });
+      } else {
+        // Object or array of objects
+        const keys = new Set();
+        if (isArr) {
+          data.forEach(item => { if (item && typeof item === 'object') Object.keys(item).forEach(k => keys.add(k)); });
+        } else {
+          keys.add('Value');
+        }
+        const colList = Array.from(keys);
+
+        let theadHtml = `<thead><tr><th class="idx-col">(index)</th>`;
+        colList.forEach(c => theadHtml += `<th>${c}</th>`);
+        theadHtml += `</tr></thead><tbody></tbody>`;
+        table.innerHTML = theadHtml;
+
+        const tbody = table.querySelector('tbody');
+        if (isArr) {
+          data.forEach((item, idx) => {
+            const tr = document.createElement('tr');
+            let trHtml = `<td class="idx-col">${idx}</td>`;
+            colList.forEach(col => {
+              const val = item ? item[col] : undefined;
+              trHtml += `<td>${val !== undefined ? (typeof val === 'object' ? JSON.stringify(val) : val) : ''}</td>`;
+            });
+            tr.innerHTML = trHtml;
+            tbody.appendChild(tr);
+          });
+        } else {
+          Object.entries(data).forEach(([key, val]) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td class="idx-col">${key}</td><td>${typeof val === 'object' ? JSON.stringify(val) : val}</td>`;
+            tbody.appendChild(tr);
+          });
+        }
+      }
+
+      container.appendChild(table);
+
+      const line = createConsoleLineElement('log');
+      line.appendChild(container);
+      appendConsoleLine(line);
+    }
+
+    function createConsoleLineElement(level = 'log') {
+      const line = document.createElement('div');
+      line.className = `console-line ${level}`;
+      line.dataset.level = level;
+
+      const now = new Date();
+      const timeStr = `[${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(Math.floor(now.getMilliseconds() / 100))}]`;
+
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'console-time';
+      timeSpan.innerText = timeStr;
+      line.appendChild(timeSpan);
+      return line;
+    }
+
+    function appendConsoleLine(line) {
+      consoleEntryCount++;
+      const badge = document.getElementById('consoleCount');
+      if (badge) badge.innerText = consoleEntryCount;
+      const mBadge = document.getElementById('mConsoleCount');
+      if (mBadge) mBadge.innerText = consoleEntryCount;
+
+      const consoleLogs = document.getElementById('consoleLogs');
+      if (!consoleLogs) return;
+
+      const promptLine = document.getElementById('consolePromptLine');
+      if (promptLine && promptLine.parentNode === consoleLogs) {
+        consoleLogs.insertBefore(line, promptLine);
+      } else {
+        consoleLogs.appendChild(line);
+      }
+      consoleLogs.scrollTop = consoleLogs.scrollHeight;
+      filterConsoleLogs();
+    }
+
+    function logConsole(msg, level = 'log') {
+      const line = createConsoleLineElement(level);
+
+      if (level === 'result') {
+        const arrow = document.createElement('span');
+        arrow.className = 'console-return-arrow';
+        arrow.innerText = '< ';
+        line.appendChild(arrow);
+      }
+
+      if (level === 'input') {
+        const contentSpan = document.createElement('span');
+        contentSpan.innerText = String(msg);
+        line.appendChild(contentSpan);
+      } else {
+        line.appendChild(formatConsoleValueDOM(msg));
+      }
+
+      appendConsoleLine(line);
+    }
+
+    function filterConsoleLogs() {
+      const filterInput = document.getElementById('consoleFilterInput');
+      const query = filterInput ? filterInput.value.trim().toLowerCase() : '';
+      const activeBadge = document.querySelector('.c-badge.active');
+      const activeFilter = activeBadge ? activeBadge.dataset.filter : 'all';
+
+      const lines = document.querySelectorAll('#consoleLogs .console-line');
+      lines.forEach(line => {
+        const lvl = line.dataset.level || 'log';
+        let matchFilter = true;
+        if (activeFilter !== 'all') {
+          if (activeFilter === 'error' && lvl !== 'error') matchFilter = false;
+          else if (activeFilter === 'warn' && lvl !== 'warn') matchFilter = false;
+          else if (activeFilter === 'info' && (lvl !== 'info' && lvl !== 'system')) matchFilter = false;
+        }
+
+        let matchQuery = true;
+        if (query) {
+          const text = line.innerText.toLowerCase();
+          matchQuery = text.includes(query);
+        }
+
+        line.style.display = matchFilter && matchQuery ? 'flex' : 'none';
+      });
+    }
+
+    /**
+     * Render the Array Track with Draggable Pointers & Droppable Slots
+     */
+    function renderBoard() {
+      arrayTrack.innerHTML = '';
+
+      state.arr.forEach((val, idx) => {
+        const slot = document.createElement('div');
+        slot.className = 'slot-cell';
+        slot.dataset.index = idx;
+
+        // Pointer Stack Above Card
+        const ptrStack = document.createElement('div');
+        ptrStack.className = 'ptr-stack';
+        ptrStack.dataset.index = idx;
+
+        Object.entries(state.pointers).forEach(([pKey, pData]) => {
+          if (pData.index === idx) {
+            const arrow = document.createElement('div');
+            arrow.className = `live-ptr-arrow ${state.selectedPointer === pKey ? 'selected' : ''}`;
+            arrow.style.background = pData.color;
+            
+            const displayName = pData.varName || pKey;
+            // Pointer name + optional scope function badge
+            if (pData.fn) {
+              arrow.innerHTML = `<div>${displayName}</div><div class="ptr-fn-badge" title="স্কোপ ফাংশন: ${pData.fn}">${pData.fn}</div>`;
+            } else {
+              arrow.innerText = displayName;
+            }
+            arrow.draggable = true;
+
+            // DRAG POINTER: Allows dragging pointer directly to other cards!
+            arrow.addEventListener('dragstart', (e) => {
+              e.stopPropagation();
+              e.dataTransfer.setData('text/pointer-key', pKey);
+            });
+
+            arrow.addEventListener('click', (e) => {
+              e.stopPropagation();
+              selectPointer(pKey);
+            });
+
+            arrow.addEventListener('dblclick', (e) => {
+              e.stopPropagation();
+              openPointerEditModal(pKey);
+            });
+
+            ptrStack.appendChild(arrow);
+          }
+        });
+
+        slot.appendChild(ptrStack);
+
+        // Card Element
+        const card = document.createElement('div');
+        card.className = 'card-element';
+        card.id = `card-${idx}`;
+        card.innerText = val;
+        card.draggable = true;
+
+        // DRAG & DROP FOR CARDS & POINTERS
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/card-index', idx);
+          card.style.opacity = '0.5';
+        });
+
+        card.addEventListener('dragend', () => { card.style.opacity = '1'; });
+        
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          card.classList.add('drag-over');
+        });
+
+        card.addEventListener('dragleave', () => {
+          card.classList.remove('drag-over');
+        });
+
+        card.addEventListener('drop', (e) => {
+          e.preventDefault();
+          card.classList.remove('drag-over');
+
+          const ptrKey = e.dataTransfer.getData('text/pointer-key') || e.dataTransfer.getData('text/pointer-name');
+          const fromCardIdx = e.dataTransfer.getData('text/card-index');
+
+          if (ptrKey && state.pointers[ptrKey]) {
+            // Drop Pointer onto this card!
+            const fromIdx = state.pointers[ptrKey].index;
+            const displayName = state.pointers[ptrKey].varName || ptrKey;
+            saveSnapshot(`Drag Pointer [${displayName}] -> Index ${idx}`);
+            state.pointers[ptrKey].index = idx;
+            recordAction('pointer_move', { pointer: ptrKey, from: fromIdx, to: idx }, `পয়েন্টার [${displayName}] কে ড্র্যাগ করে [${fromIdx}] থেকে [${idx}] এ নেওয়া হলো`);
+            renderBoard();
+            renderPointerTray();
+          } else if (fromCardIdx !== '') {
+            // Swap Card values
+            const srcIdx = parseInt(fromCardIdx, 10);
+            if (!isNaN(srcIdx) && srcIdx !== idx) {
+              executeSwapAnimation(srcIdx, idx);
+            }
+          }
+        });
+
+        // NOTE: a plain left click on a card must NOT move any pointer.
+        // Cards are manipulated via drag & drop, double-click (edit value), or the
+        // right-click context menu — never by accidental single-click relocation.
+
+        // Double Click to Edit Value
+        card.addEventListener('dblclick', () => {
+          const newVal = prompt(`ইনডেক্স [${idx}] এর মান পরিবর্তন করুন:`, val);
+          if (newVal !== null && !isNaN(parseInt(newVal, 10))) {
+            const parsedVal = parseInt(newVal, 10);
+            saveSnapshot(`Update arr[${idx}] = ${parsedVal}`);
+            recordAction('edit_value', { index: idx, oldVal: state.arr[idx], newVal: parsedVal }, `ইনডেক্স [${idx}] এর মান ${state.arr[idx]} থেকে পরিবর্তন করে ${parsedVal} করা হলো`);
+            state.arr[idx] = parsedVal;
+            renderBoard();
+          }
+        });
+
+        // Custom Context Menu on Card & Slot (shared, off-screen-clamped positioning)
+        const openCustomContextMenu = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          showContextMenu(e.clientX, e.clientY, idx);
+        };
+
+        card.addEventListener('contextmenu', openCustomContextMenu);
+        slot.addEventListener('contextmenu', openCustomContextMenu);
+
+        slot.appendChild(card);
+
+        // Index Label
+        const idxLabel = document.createElement('div');
+        idxLabel.className = 'slot-idx';
+        idxLabel.innerText = `[${idx}]`;
+        slot.appendChild(idxLabel);
+
+        arrayTrack.appendChild(slot);
+      });
+
+      renderPointerTray();
+    }
+
+    /**
+     * Render Pointer Banner Tray with ◀ ▶ Nav Buttons, Rename & Delete
+     */
+    function renderPointerTray() {
+      pointerTray.innerHTML = '<span style="font-size: 0.78rem; font-weight: bold; color: var(--text-muted);">🎯 পয়েন্টার্স:</span>';
+
+      Object.entries(state.pointers).forEach(([pKey, pData]) => {
+        const pill = document.createElement('div');
+        pill.className = `pointer-pill ${state.selectedPointer === pKey ? 'selected' : ''}`;
+        pill.style.background = pData.color;
+        pill.style.color = '#090d16';
+
+        const displayName = pData.varName || pKey;
+        const fnBadge = pData.fn ? `<span class="ptr-fn-badge" style="background:#090e1a; margin-left: 2px;">${pData.fn}</span>` : '';
+
+        pill.innerHTML = `
+          <span class="ptr-title" title="ডাবল ক্লিক করে এডিট/রিনেম করুন">${displayName} (@${pData.index})${fnBadge}</span>
+          <span class="ptr-nav btn-edit" title="এডিট ও স্কোপ পরিবর্তন">✏️</span>
+          <span class="ptr-nav btn-left" title="এক ঘর বামে সরান">◀</span>
+          <span class="ptr-nav btn-right" title="এক ঘর ডানে সরান">▶</span>
+          <span class="del-btn" title="ডিলিট">&times;</span>
+        `;
+
+        pill.addEventListener('click', (e) => {
+          if (e.target.classList.contains('del-btn')) {
+            deletePointer(pKey);
+          } else if (e.target.classList.contains('btn-edit')) {
+            openPointerEditModal(pKey);
+          } else if (e.target.classList.contains('btn-left')) {
+            movePointerRelative(pKey, -1);
+          } else if (e.target.classList.contains('btn-right')) {
+            movePointerRelative(pKey, 1);
+          } else {
+            selectPointer(pKey);
+          }
+        });
+
+        pill.addEventListener('dblclick', (e) => {
+          if (!e.target.classList.contains('ptr-nav') && !e.target.classList.contains('del-btn')) {
+            openPointerEditModal(pKey);
+          }
+        });
+
+        pointerTray.appendChild(pill);
+      });
+    }
+
+    function openPointerEditModal(pKey = null) {
+      const modal = document.getElementById('ptrModal');
+      const title = document.getElementById('ptrModalTitle');
+      const oldNameInput = document.getElementById('modalPtrOldName');
+      const nameInput = document.getElementById('modalPtrName');
+      const idxInput = document.getElementById('modalPtrIdx');
+      const fnSelect = document.getElementById('modalPtrFn');
+
+      // Populate functions dropdown from current code
+      const currentCode = editorInstance ? editorInstance.getValue() : codeEditor.value;
+      const { functions } = extractAllVariablesAndFunctions(currentCode);
+      fnSelect.innerHTML = '<option value="">🌐 গ্লোবাল / ইউনিভার্সাল</option>';
+      functions.forEach(fn => {
+        const opt = document.createElement('option');
+        opt.value = fn;
+        opt.innerText = `ফাংশন: ${fn}()`;
+        fnSelect.appendChild(opt);
+      });
+
+      if (pKey && state.pointers[pKey]) {
+        const ptr = state.pointers[pKey];
+        const displayName = ptr.varName || pKey;
+        title.innerText = `পয়েন্টার '${displayName}' এডিট করুন`;
+        oldNameInput.value = pKey;
+        nameInput.value = displayName;
+        idxInput.value = ptr.index;
+        fnSelect.value = ptr.fn || '';
+      } else {
+        title.innerText = 'নতুন পয়েন্টার তৈরি';
+        oldNameInput.value = '';
+        nameInput.value = '';
+        idxInput.value = '0';
+        fnSelect.value = '';
+      }
+
+      modal.style.display = 'flex';
+      nameInput.focus();
+    }
+
+    function renamePointerPrompt(oldName) {
+      const newName = prompt(`'${oldName}' পয়েন্টারের নতুন নাম লিখুন:`, oldName);
+      if (newName && newName.trim() && newName.trim() !== oldName) {
+        const cleanName = newName.trim();
+        if (state.pointers[cleanName]) {
+          alert(`'${cleanName}' নামের পয়েন্টার ইতিমধ্যে বিদ্যমান!`);
+          return;
+        }
+        state.pointers[cleanName] = { ...state.pointers[oldName] };
+        delete state.pointers[oldName];
+        if (state.selectedPointer === oldName) {
+          state.selectedPointer = cleanName;
+        }
+        saveSnapshot(`Rename pointer [${oldName}] -> [${cleanName}]`);
+        recordAction('rename_pointer', { oldName, newName: cleanName }, `পয়েন্টারের নাম পরিবর্তন: [${oldName}] ➔ [${cleanName}]`);
+        renderBoard();
+        renderPointerTray();
+      }
+    }
+
+    function selectPointer(name) {
+      state.selectedPointer = name;
+      recordAction('select_pointer', { pointer: name }, `পয়েন্টার নির্বাচন: [${name}]`);
+      renderPointerTray();
+      renderBoard();
+    }
+
+    function movePointerRelative(name, delta) {
+      if (state.pointers[name]) {
+        const fromIdx = state.pointers[name].index;
+        const next = Math.max(0, Math.min(state.arr.length - 1, state.pointers[name].index + delta));
+        state.pointers[name].index = next;
+        saveSnapshot(`Move pointer [${name}] -> ${next}`);
+        recordAction('pointer_move', { pointer: name, from: fromIdx, to: next }, `পয়েন্টার [${name}] কে [${fromIdx}] থেকে [${next}] এ সরানো হলো`);
+        renderBoard();
+        renderPointerTray();
+      }
+    }
+
+    function deletePointer(name) {
+      const lastIdx = state.pointers[name] ? state.pointers[name].index : null;
+      saveSnapshot(`Delete pointer [${name}]`);
+      recordAction('delete_pointer', { pointer: name, index: lastIdx }, `পয়েন্টার মুছে ফেলা হলো: [${name}]`);
+      delete state.pointers[name];
+      if (state.selectedPointer === name) {
+        state.selectedPointer = Object.keys(state.pointers)[0] || null;
+      }
+      renderBoard();
+      renderPointerTray();
+    }
+
+    /**
+     * Physics-based Smooth Gliding Swap Animation
+     */
+    async function executeSwapAnimation(i, j) {
+      if (i === j || i < 0 || j < 0 || i >= state.arr.length || j >= state.arr.length) return;
+
+      const cardA = document.getElementById(`card-${i}`);
+      const cardB = document.getElementById(`card-${j}`);
+
+      if (cardA && cardB) {
+        const rectA = cardA.getBoundingClientRect();
+        const rectB = cardB.getBoundingClientRect();
+        const deltaX = rectB.left - rectA.left;
+
+        // Dynamic physics duration configured by dedicated swapSpeedSlider
+        const animDuration = state.swapDurationMs || Math.min(450, Math.max(180, state.delayMs * 0.7));
+
+        // Setup smooth cubic-bezier transitions and glowing styles
+        cardA.style.transition = `transform ${animDuration}ms cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow ${animDuration}ms ease, border-color ${animDuration}ms ease`;
+        cardB.style.transition = `transform ${animDuration}ms cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow ${animDuration}ms ease, border-color ${animDuration}ms ease`;
+
+        cardA.style.zIndex = '35';
+        cardB.style.zIndex = '34';
+        cardA.style.borderColor = '#c084fc';
+        cardB.style.borderColor = '#38bdf8';
+        cardA.style.boxShadow = '0 12px 28px rgba(192, 132, 252, 0.75)';
+        cardB.style.boxShadow = '0 12px 28px rgba(56, 189, 248, 0.75)';
+
+        // Curved 3D Arc: Card A arcs upwards to slot B, Card B arcs downwards to slot A
+        cardA.style.transform = `translate(${deltaX}px, -20px) scale(1.12)`;
+        cardB.style.transform = `translate(${-deltaX}px, 14px) scale(1.12)`;
+
+        await sleep(animDuration);
+      }
+
+      const valA = state.arr[i];
+      const valB = state.arr[j];
+      state.arr[i] = valB;
+      state.arr[j] = valA;
+      saveSnapshot(`🔄 Swap: arr[${i}](${valB}) ⇄ arr[${j}](${valA})`);
+      recordAction('swap', { i, j, valI: valB, valJ: valA }, `সোয়াপ করা হলো: arr[${i}] (${valB}) ⇄ arr[${j}] (${valA})`);
+
+      renderBoard();
+
+      // Apply tactile landing pulse to settled cards
+      const newCardA = document.getElementById(`card-${i}`);
+      const newCardB = document.getElementById(`card-${j}`);
+      if (newCardA) newCardA.classList.add('landing-pulse');
+      if (newCardB) newCardB.classList.add('landing-pulse');
+      setTimeout(() => {
+        if (newCardA) newCardA.classList.remove('landing-pulse');
+        if (newCardB) newCardB.classList.remove('landing-pulse');
+      }, 300);
+
+      await sleep(Math.max(60, state.delayMs * 0.2));
+    }
+
+    let editorInstance = null;
+
+    /**
+     * Code Execution & Auto-Instrumenter Engine
+     */
+    function updateEditorGutter() {
+      // Handled by CodeMirror gutters & breakpoints
+    }
+
+    function highlightExecLine(lineNo) {
+      if (!editorInstance) return;
+      if (state.activeExecLine !== null) {
+        editorInstance.removeLineClass(state.activeExecLine - 1, 'background', 'cm-executing-line');
+      }
+      state.activeExecLine = lineNo;
+      if (lineNo !== null && lineNo > 0) {
+        editorInstance.addLineClass(lineNo - 1, 'background', 'cm-executing-line');
+        editorInstance.scrollIntoView({ line: lineNo - 1, ch: 0 }, 50);
+      }
+    }
+
+    /**
+     * Floating Draggable Sticky Notes
+     */
+    function createStickyNote(text = "নতুন পর্যবেক্ষণ...", x = 100, y = 80, color = "#fef08a") {
+      const noteId = 'note_' + Date.now();
+      const noteObj = { id: noteId, text, x, y, color };
+      state.notes.push(noteObj);
+
+      const el = document.createElement('div');
+      el.className = 'floating-note';
+      el.id = noteId;
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.style.background = color;
+
+      el.innerHTML = `
+        <div class="note-header">
+          <span>📝 স্টিকি নোট</span>
+          <button class="close-btn">&times;</button>
+        </div>
+        <textarea spellcheck="false">${text}</textarea>
+      `;
+
+      // Drag Note
+      let isDragging = false, startX, startY, origX, origY;
+      el.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'BUTTON') return;
+        isDragging = true;
+        startX = e.clientX; startY = e.clientY;
+        origX = el.offsetLeft; origY = el.offsetTop;
+        el.style.zIndex = '100';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let newX = origX + (e.clientX - startX);
+        let newY = origY + (e.clientY - startY);
+        // Clamp inside window boundaries so sticky note can NEVER be lost offscreen!
+        newY = Math.max(10, Math.min(window.innerHeight - 60, newY));
+        newX = Math.max(10, Math.min(window.innerWidth - 80, newX));
+        el.style.left = `${newX}px`;
+        el.style.top = `${newY}px`;
+        noteObj.x = newX;
+        noteObj.y = newY;
+      });
+
+      window.addEventListener('mouseup', () => { isDragging = false; el.style.zIndex = '9999'; });
+
+      el.querySelector('textarea').addEventListener('input', (e) => {
+        noteObj.text = e.target.value;
+        recordAction('note_update', { id: noteId, text: e.target.value }, `স্টিকি নোট আপডেট করা হলো: "${e.target.value.substring(0, 30)}..."`);
+      });
+      el.querySelector('.close-btn').addEventListener('click', () => {
+        state.notes = state.notes.filter(n => n.id !== noteId);
+        recordAction('note_delete', { id: noteId }, `স্টিকি নোট মুছে ফেলা হলো`);
+        el.remove();
+      });
+
+      document.body.appendChild(el);
+      recordAction('note_add', { id: noteId, text }, `স্টিকি নোট যুক্ত করা হলো: "${text.substring(0, 30)}"`);
+    }
+
+    /**
+     * Async Stepper & Universal Code Transformer Engine
+     */
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function waitStep(lineNo) {
+      if (!state.isRunning) throw new Error("Execution stopped");
+
+      // Check for user-defined breakpoint
+      if (lineNo && state.breakpoints.has(lineNo)) {
+        state.isPaused = true;
+        logStep(`🛑 ব্রেকপয়েন্ট হিট করেছে: লাইন ${lineNo}`, 'bp');
+      }
+
+      if (state.isPaused) {
+        await new Promise(resolve => { state.stepResolver = resolve; });
+      } else {
+        await sleep(state.delayMs);
+      }
+    }
+
+    // Universal Helper: Compare two array indices with visual animation
+    async function compare(i, j, op = '>') {
+      if (typeof i !== 'number' || typeof j !== 'number') return false;
+      i = Math.floor(i); j = Math.floor(j);
+      if (i < 0 || j < 0 || i >= state.arr.length || j >= state.arr.length) return false;
+
+      const cardA = document.getElementById(`card-${i}`);
+      const cardB = document.getElementById(`card-${j}`);
+      if (cardA) cardA.classList.add('comparing');
+      if (cardB) cardB.classList.add('comparing');
+
+      logStep(`⚖️ Compare: arr[${i}](${state.arr[i]}) ${op} arr[${j}](${state.arr[j]})`, 'compare');
+      await sleep(Math.max(80, state.delayMs / 2));
+
+      if (cardA) cardA.classList.remove('comparing');
+      if (cardB) cardB.classList.remove('comparing');
+
+      if (op === '>') return state.arr[i] > state.arr[j];
+      if (op === '<') return state.arr[i] < state.arr[j];
+      if (op === '>=') return state.arr[i] >= state.arr[j];
+      if (op === '<=') return state.arr[i] <= state.arr[j];
+      if (op === '==' || op === '===') return state.arr[i] === state.arr[j];
+      if (op === '!=' || op === '!==') return state.arr[i] !== state.arr[j];
+      return state.arr[i] > state.arr[j];
+    }
+
+    // Universal Helper: Swap two elements with physical animation
+    // Supports both swap(i, j) and swap(arr, i, j)
+    async function swap(a, b, c) {
+      let i, j;
+      if (typeof a === 'object' && a !== null) {
+        i = b; j = c; // swap(arr, i, j)
+      } else {
+        i = a; j = b; // swap(i, j)
+      }
+      if (typeof i !== 'number' || typeof j !== 'number') return;
+      await executeSwapAnimation(Math.floor(i), Math.floor(j));
+    }
+
+    // Helper: Compute unique storage key for a pointer based on name and scope
+    function getPointerKey(varName, fnScope) {
+      return fnScope ? `${fnScope}::${varName}` : varName;
+    }
+
+    // Helper: Find matching active pointer in state.pointers for a given variable and runtime function
+    function matchActivePointer(k, currentFn) {
+      // 1. Direct scoped pointer check: e.g. "merge::lp" when currentFn === "merge"
+      if (currentFn) {
+        const scopedKey = `${currentFn}::${k}`;
+        if (state.pointers[scopedKey]) {
+          return { key: scopedKey, ptr: state.pointers[scopedKey] };
+        }
+      }
+      // 2. Global / universal pointer check: e.g. "i" or pointers without fn scope
+      if (state.pointers[k] && !state.pointers[k].fn) {
+        return { key: k, ptr: state.pointers[k] };
+      }
+      // 3. Scan for any explicitly matching scoped pointer
+      for (const [key, ptr] of Object.entries(state.pointers)) {
+        if (ptr.varName === k || key === k) {
+          if (ptr.fn === currentFn || (!ptr.fn && !currentFn)) {
+            return { key, ptr };
+          }
+        }
+      }
+      return null;
+    }
+
+    // Manual or Auto tracking hook
+    async function track(lineNo, vars = {}) {
+      highlightExecLine(lineNo);
+      Object.entries(vars).forEach(([k, v]) => {
+        const match = matchActivePointer(k, '');
+        if (match && typeof v === 'number' && Number.isInteger(v) && v >= 0 && v < state.arr.length) {
+          match.ptr.index = v;
+        }
+      });
+      renderBoard();
+      await waitStep(lineNo);
+    }
+
+    // Extract all declared functions, parameters, loop variables, and assignments
+    function extractAllVariablesAndFunctions(code) {
+      const functions = [];
+      const variables = new Set();
+
+      // 1. Discover all functions and their parameters
+      const fnRegex = /\bfunction\s*([a-zA-Z0-9_$]*)\s*\(([^)]*)\)/g;
+      let fnMatch;
+      while ((fnMatch = fnRegex.exec(code)) !== null) {
+        const fnName = fnMatch[1];
+        if (fnName) functions.push(fnName);
+        const params = fnMatch[2].split(',').map(p => p.trim()).filter(Boolean);
+        for (const p of params) {
+          variables.add(p);
+        }
+      }
+
+      // 2. Discover let/var/const multi-variable declarations: let i = 0, j = 1, k;
+      const declRegex = /\b(?:let|var|const)\s+([^;{\n]+)/g;
+      let declMatch;
+      while ((declMatch = declRegex.exec(code)) !== null) {
+        const declBody = declMatch[1];
+        const parts = declBody.split(',');
+        for (const part of parts) {
+          const varNameMatch = part.trim().match(/^([a-zA-Z0-9_$]+)/);
+          if (varNameMatch) {
+            variables.add(varNameMatch[1]);
+          }
+        }
+      }
+
+      // 3. Discover loop variable declarations: for (i = 0; ...) or for (let i = 0; ...)
+      const loopRegex = /\bfor\s*\(\s*(?:let|var|const)?\s*([a-zA-Z0-9_$]+)/g;
+      let loopMatch;
+      while ((loopMatch = loopRegex.exec(code)) !== null) {
+        variables.add(loopMatch[1]);
+      }
+
+      // 4. Discover variable assignments: minIdx = j; or left = mid + 1;
+      const assignRegex = /\b([a-zA-Z0-9_$]+)\s*=(?!=)/g;
+      let assignMatch;
+      while ((assignMatch = assignRegex.exec(code)) !== null) {
+        variables.add(assignMatch[1]);
+      }
+
+      // Filter out reserved words and ignored common vars
+      const reserved = new Set([
+        'arr', 'n', 'len', 'length', 'temp', 'flag', 'true', 'false', 'null', 'undefined',
+        'if', 'else', 'for', 'while', 'do', 'return', 'function', 'class', 'const', 'let', 'var',
+        'switch', 'case', 'break', 'continue', 'new', 'try', 'catch', 'finally', 'throw', 'typeof',
+        'void', 'delete', 'in', 'instanceof', 'this', 'async', 'await', 'console', 'Math', 'window', 'document'
+      ]);
+
+      const cleanVars = Array.from(variables).filter(v => !reserved.has(v) && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(v));
+      return { functions, variables: cleanVars };
+    }
+
+    // Manual or Auto tracking hook
+    async function track(lineNo, vars = {}) {
+      highlightExecLine(lineNo);
+      Object.entries(vars).forEach(([k, v]) => {
+        const match = matchActivePointer(k, '');
+        if (match && typeof v === 'number' && Number.isInteger(v) && v >= 0 && v < state.arr.length) {
+          match.ptr.index = v;
+        }
+      });
+      renderBoard();
+      await waitStep(lineNo);
+    }
+
+    // Automated runtime step hook inserted into loops
+    async function __tick__(lineNo, getVarsFn) {
+      highlightExecLine(lineNo);
+      if (typeof getVarsFn === 'function') {
+        try {
+          const payload = getVarsFn() || {};
+          const vars = payload.vars || {};
+          const currentFn = payload.fn || '';
+          let changed = false;
+
+          for (const [k, v] of Object.entries(vars)) {
+            if (typeof v === 'number' && Number.isInteger(v) && v >= 0 && v < state.arr.length) {
+              const match = matchActivePointer(k, currentFn);
+              if (match) {
+                if (match.ptr.index !== v) {
+                  match.ptr.index = v;
+                  changed = true;
+                }
+              }
+            }
+          }
+          if (changed) {
+            renderBoard();
+            renderPointerTray();
+          }
+        } catch (e) {}
+      }
+
+      // Record snapshot on every tick for stepping backward
+      saveExecutionStep(lineNo);
+      await waitStep(lineNo);
+    }
+
+    // Records fine-grained execution snapshot for stepBack (time-travel debugging)
+    function saveExecutionStep(lineNo) {
+      if (!state.isRunning) return;
+      state.history.push({
+        arr: [...state.arr],
+        pointers: JSON.parse(JSON.stringify(state.pointers)),
+        notes: JSON.parse(JSON.stringify(state.notes)),
+        lineNo: lineNo || state.activeExecLine,
+        desc: `Line ${lineNo || state.activeExecLine}`
+      });
+      // Cap history to 500 steps to keep memory agile
+      if (state.history.length > 500) {
+        state.history.shift();
+      }
+    }
+
+    // Instant pointer synchronization hook injected right after assignments
+    function __syncPointers__(getVarsFn) {
+      if (typeof getVarsFn !== 'function') return;
+      try {
+        const payload = getVarsFn() || {};
+        const vars = payload.vars || {};
+        const currentFn = payload.fn || '';
+        let changed = false;
+
+        for (const [k, v] of Object.entries(vars)) {
+          if (typeof v === 'number' && Number.isInteger(v) && v >= 0 && v < state.arr.length) {
+            const match = matchActivePointer(k, currentFn);
+            if (match) {
+              if (match.ptr.index !== v) {
+                match.ptr.index = v;
+                changed = true;
+              }
+            }
+          }
+        }
+        if (changed) {
+          renderBoard();
+          renderPointerTray();
+        }
+      } catch (e) {}
+    }
+
+    /**
+     * Intelligent Code Transformer:
+     * Converts ANY standard JS/C-style array code into animated, debuggable code
+     */
+    function transformAlgorithmCode(code) {
+      // 1. Convert basic C types if user pasted C code
+      let processed = code
+        .replace(/\bint\s+/g, 'let ')
+        .replace(/\bfloat\s+/g, 'let ')
+        .replace(/\bdouble\s+/g, 'let ')
+        .replace(/sizeof\([^)]*\)\s*\/\s*sizeof\([^)]*\)/g, 'arr.length');
+
+      // 2. Discover declared functions and convert declarations to async
+      const declaredFunctions = [];
+      const fnDeclRegex = /\bfunction\s+([a-zA-Z0-9_$]+)\s*\(/g;
+      let fnMatch;
+      while ((fnMatch = fnDeclRegex.exec(processed)) !== null) {
+        declaredFunctions.push(fnMatch[1]);
+      }
+
+      processed = processed.replace(/(?<!async\s+)\bfunction\s*([a-zA-Z0-9_$]*)\s*\(/g, 'async function $1(');
+      processed = processed.replace(/(?<!async\s+)\bfunction\s*\(/g, 'async function(');
+
+      // 2b. Auto-await calls to declared functions so Promises don't run detached
+      declaredFunctions.forEach(fnName => {
+        const callRegex = new RegExp(`(?<!async\\s+)(?<!function\\s+)(?<!await\\s+)\\b${fnName}\\s*\\(`, 'g');
+        processed = processed.replace(callRegex, `await ${fnName}(`);
+      });
+
+      // 2c. Inject __currentFn__ tracking into declared functions (supports { on same line or next line)
+      processed = processed.replace(/(\basync\s+function\s+([a-zA-Z0-9_$]+)\s*\([^)]*\)\s*[\r\n\s]*\{)/g, `$1\n  let __currentFn__ = '$2';`);
+
+      // 3. Collect comprehensive variables (only valid JS identifiers)
+      const { variables: discoveredVars } = extractAllVariablesAndFunctions(code);
+      const userPointerVarNames = Object.entries(state.pointers)
+        .map(([k, p]) => p.varName || (k.includes('::') ? k.split('::')[1] : k))
+        .filter(v => /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(v));
+      const trackedNames = Array.from(new Set([
+        ...userPointerVarNames,
+        ...discoveredVars,
+        'cur_l', 'cur_r', 'ap', 'rp', 'mid', 'lp', 'i', 'j', 'k', 'left', 'right', 'low', 'high', 'pivot', 'minIdx'
+      ])).filter(v => /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(v));
+
+      // TDZ-safe individual evaluation
+      const varChecks = trackedNames.map(v => `try { if (typeof ${v} !== 'undefined') _r['${v}'] = ${v}; } catch(e) {}`).join(' ');
+      const safeVarsExpr = `(() => { const _r = {}; ${varChecks} return { vars: _r, fn: typeof __currentFn__ !== 'undefined' ? __currentFn__ : '' }; })`;
+
+      // 4. Transform standalone swap(...) calls to await swap(...) preserving all arguments!
+      processed = processed.replace(
+        /(?<!await\s+)\bswap\s*\(/g,
+        'await swap('
+      );
+
+      // 4b. Transform classic 3-line temp swap pattern to await swap(a, b);
+      // Handles: [let|var|const] temp = arr[a]; arr[a] = arr[b]; arr[b] = temp;
+      processed = processed.replace(
+        /(?:(?:(?:let|var|const)\s+)?([a-zA-Z0-9_$]+)\s*=\s*arr\[([^\]]+)\]\s*;\s*arr\[\2\]\s*=\s*arr\[([^\]]+)\]\s*;\s*arr\[\3\]\s*=\s*\1;?)/g,
+        'await swap($2, $3);'
+      );
+
+      // 4c. Transform ES6 destructuring swap pattern: [arr[a], arr[b]] = [arr[b], arr[a]];
+      processed = processed.replace(
+        /\[\s*arr\[([^\]]+)\]\s*,\s*arr\[([^\]]+)\]\s*\]\s*=\s*\[\s*arr\[\2\]\s*,\s*arr\[\1\]\s*\];?/g,
+        'await swap($1, $2);'
+      );
+
+      // 6. Transform array comparisons arr[a] > arr[b] to await compare(a, b, '>')
+      processed = processed.replace(
+        /arr\[([^\]]+)\]\s*(>|<|>=|<=|===|==|!=|!==)\s*arr\[([^\]]+)\]/g,
+        '(await compare($1, $3, "$2"))'
+      );
+
+      // 7. Split by lines and inject await __tick__(lineNo, safeVarsExpr) into EVERY executable statement
+      const lines = processed.split('\n');
+      const transformedLines = lines.map((line, idx) => {
+        const lineNo = idx + 1;
+        const trimmed = line.trim();
+
+        if (!trimmed) return line;
+        if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) return line;
+        if (/^\}\s*;?$/.test(trimmed)) return line;
+        if (/^\}\s*else\s*\{?$/.test(trimmed)) return line;
+        if (/^else\s*\{?$/.test(trimmed)) return line;
+        if (/^\s*(async\s+)?function\b/.test(line)) return line;
+
+        // If loop header: inject tick inside the loop body so it executes on every iteration!
+        if (/\b(for|while)\s*\([^)]*\)\s*\{?/.test(line)) {
+          if (line.includes('{')) {
+            return line.replace(/\{/, `{\n  await __tick__(${lineNo}, ${safeVarsExpr});`);
+          } else {
+            return `${line} await __tick__(${lineNo}, ${safeVarsExpr});`;
+          }
+        }
+
+        const indent = line.match(/^\s*/)[0];
+        // If line contains variable assignment (e.g. minIdx = j; or let minIdx = i;) inject __syncPointers__
+        if (/^(?:let\s+|const\s+|var\s+)?[a-zA-Z0-9_$]+\s*=\s*/.test(trimmed)) {
+          return `${indent}await __tick__(${lineNo}, ${safeVarsExpr}); ${trimmed} __syncPointers__(${safeVarsExpr});`;
+        }
+        return `${indent}await __tick__(${lineNo}, ${safeVarsExpr}); ${trimmed}`;
+      });
+
+      return 'let __currentFn__ = "";\n' + transformedLines.join('\n');
+    }
+
+    async function runScript() {
+      if (state.isRunning && state.isPaused) {
+        // Resume from pause
+        state.isPaused = false;
+        if (state.stepResolver) {
+          state.stepResolver();
+          state.stepResolver = null;
+        }
+        return;
+      }
+
+      state.preRunSnapshot = {
+        arr: [...state.arr],
+        pointers: JSON.parse(JSON.stringify(state.pointers))
+      };
+      state.isRunning = true;
+      state.isPaused = false;
+      logStep("🚀 স্ক্রিপ্ট এক্সিকিউশন শুরু...");
+
+      const rawCode = editorInstance ? editorInstance.getValue() : codeEditor.value;
+
+      // Note: Auto-creating pointers from every variable in code is disabled per user design.
+      // Only user-defined pointers (Canvas/Modal) are tracked live.
+
+      const instrumented = transformAlgorithmCode(rawCode);
+
+      // Create a reactive Proxy for arr so in-place arr[x] = val is animated automatically!
+      const reactiveArr = new Proxy(state.arr, {
+        set(target, prop, value) {
+          const idx = Number(prop);
+          if (!isNaN(idx) && idx >= 0 && idx < target.length) {
+            target[idx] = value;
+            const card = document.getElementById(`card-${idx}`);
+            if (card) {
+              card.innerText = value;
+              card.classList.remove('swapping');
+              void card.offsetWidth;
+              card.classList.add('swapping');
+              setTimeout(() => { if (card) card.classList.remove('swapping'); }, 350);
+            }
+            logStep(`✏️ arr[${idx}] = ${value}`, 'generic');
+            saveExecutionStep(state.activeExecLine);
+          } else {
+            target[prop] = value;
+          }
+          return true;
+        }
+      });
+
+      const labConsole = {
+        log: (...args) => {
+          if (args.length === 1) logConsole(args[0], 'log');
+          else logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'log');
+        },
+        info: (...args) => {
+          if (args.length === 1) logConsole(args[0], 'info');
+          else logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'info');
+        },
+        warn: (...args) => {
+          if (args.length === 1) logConsole(args[0], 'warn');
+          else logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'warn');
+        },
+        error: (...args) => {
+          if (args.length === 1) logConsole(args[0], 'error');
+          else logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'error');
+        },
+        table: (data) => renderConsoleTable(data),
+        clear: () => clearDevToolsConsole()
+      };
+
+      const asyncWrapper = `
+        return (async () => {
+          const arr = reactiveArr;
+          const console = labConsole;
+          try {
+            ${instrumented}
+          } catch(err) {
+            if (err.message !== "Execution stopped") {
+              logStep("❌ Error: " + err.message, "bp");
+            }
+          }
+        })();
+      `;
+
+      try {
+        const fn = new Function('state', 'reactiveArr', 'compare', 'swap', 'track', '__tick__', '__syncPointers__', 'labConsole', asyncWrapper);
+        await fn(state, reactiveArr, compare, swap, track, __tick__, __syncPointers__, labConsole);
+        logStep("🎉 এক্সিকিউশন সম্পূর্ণ হয়েছে!");
+      } catch (err) {
+        logStep("❌ স্ক্রিপ্ট সিনট্যাক্স এরর: " + err.message, "bp");
+      } finally {
+        state.isRunning = false;
+        state.isPaused = false;
+        highlightExecLine(null);
+      }
+    }
+
+    /**
+     * Recorder Controller & Prompt Export Engine
+     */
+    function startRecording() {
+      state.recorder.isRecording = true;
+      state.recorder.isPaused = false;
+      state.recorder.startTime = Date.now();
+      state.recorder.totalPausedMs = 0;
+      state.recorder.pauseStartTime = null;
+      state.recorder.actions = [];
+      state.recorder.initialState = {
+        arr: [...state.arr],
+        pointers: JSON.parse(JSON.stringify(state.pointers)),
+        notes: JSON.parse(JSON.stringify(state.notes)),
+        timestamp: new Date().toISOString()
+      };
+
+      updateRecorderUI();
+      logStep("🔴 থিংকিং ও অ্যাকশন রেকর্ডিং শুরু হয়েছে...", "generic");
+    }
+
+    function togglePauseRecording() {
+      if (!state.recorder.isRecording) return;
+      if (state.recorder.isPaused) {
+        // Resume
+        state.recorder.isPaused = false;
+        if (state.recorder.pauseStartTime) {
+          state.recorder.totalPausedMs += (Date.now() - state.recorder.pauseStartTime);
+          state.recorder.pauseStartTime = null;
+        }
+        updateRecorderUI();
+        logStep("▶️ রেকর্ডিং পুনরায় চালু করা হয়েছে।", "generic");
+      } else {
+        // Pause
+        state.recorder.isPaused = true;
+        state.recorder.pauseStartTime = Date.now();
+        updateRecorderUI();
+        logStep("⏸️ রেকর্ডিং পজ করা হয়েছে।", "generic");
+      }
+    }
+
+    function stopRecording() {
+      if (!state.recorder.isRecording) return;
+      state.recorder.isRecording = false;
+      state.recorder.isPaused = false;
+      updateRecorderUI();
+      logStep(`⏹️ রেকর্ডিং শেষ। মোট ${state.recorder.actions.length} টি অ্যাকশন সংরক্ষিত।`, "generic");
+    }
+
+    function exportRecordedSession() {
+      if (state.recorder.actions.length === 0) {
+        alert("কোনো অ্যাকশন রেকর্ড করা হয়নি!");
+        return;
+      }
+
+      const sessionData = {
+        title: "OmniLab Manual Thinking & Algorithm Trace",
+        exportedAt: new Date().toISOString(),
+        initialState: state.recorder.initialState,
+        finalState: {
+          arr: [...state.arr],
+          pointers: JSON.parse(JSON.stringify(state.pointers))
+        },
+        totalActions: state.recorder.actions.length,
+        actions: state.recorder.actions
+      };
+
+      // Generate AI-Ready Markdown Thinking Trace Prompt
+      let mdPrompt = `# 🧠 Human Algorithm Thinking & Manual Testing Trace\n\n`;
+      mdPrompt += `**Context:** The human developer manually simulated this array algorithm step-by-step on OmniLab Pro.\n`;
+      mdPrompt += `Use this sequence of pointer movements, comparisons, swaps, and notes to deduce the intended logic and synthesize the exact JavaScript/C algorithm.\n\n`;
+      mdPrompt += `## 1. Initial State\n`;
+      mdPrompt += `- **Initial Array:** \`[${(sessionData.initialState ? sessionData.initialState.arr : []).join(', ')}]\`\n`;
+      mdPrompt += `- **Initial Pointers:** ${Object.entries(sessionData.initialState?.pointers || {}).map(([k,v])=>`\`${k}=${v.index}\``).join(', ')}\n\n`;
+      mdPrompt += `## 2. Chronological Human Action Steps\n`;
+
+      state.recorder.actions.forEach(a => {
+        mdPrompt += `${a.step}. **[+${a.time}] ${a.desc}**\n`;
+        mdPrompt += `   - Current Array: \`[${a.arrSnapshot.join(', ')}]\`\n`;
+        mdPrompt += `   - Pointers: ${Object.entries(a.pointersSnapshot).map(([k,v])=>`${k}=${v.index}`).join(', ')}\n`;
+      });
+
+      mdPrompt += `\n## 3. Final State\n`;
+      mdPrompt += `- **Resulting Array:** \`[${state.arr.join(', ')}]\`\n`;
+      mdPrompt += `- **Final Pointers:** ${Object.entries(state.pointers).map(([k,v])=>`\`${k}=${v.index}\``).join(', ')}\n\n`;
+      mdPrompt += `## 🎯 Prompt Task for AI:\n`;
+      mdPrompt += `Analyze the manual steps above, explain the algorithm's invariants and mental model, and write the optimal, clean code implementation corresponding to this exact human behavior.\n`;
+
+      // Export both as JSON and Markdown in a single zip-like download or formatted text
+      const fullExport = {
+        metadata: sessionData,
+        aiPromptMarkdown: mdPrompt
+      };
+
+      const blob = new Blob([JSON.stringify(fullExport, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `algorithm_trace_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      logStep("📥 অ্যালগরিদম থিংকিং রেকর্ড ফাইল সেভ হয়েছে!");
+    }
+
+    /**
+     * Project Export & Import (JSON)
+     */
+    function exportProject() {
+      const data = {
+        version: "OmniLab_Pro_v4",
+        arr: state.arr,
+        pointers: state.pointers,
+        notes: state.notes,
+        code: editorInstance ? editorInstance.getValue() : codeEditor.value,
+        breakpoints: Array.from(state.breakpoints)
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `omnilab_project_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      logStep("💾 প্রজেক্ট ফাইল ডাউনলোড হয়েছে!");
+    }
+
+    function importProject(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const proj = JSON.parse(event.target.result);
+          if (proj.arr) state.arr = proj.arr;
+          if (proj.pointers) state.pointers = proj.pointers;
+          if (proj.code) {
+            if (editorInstance) editorInstance.setValue(proj.code);
+            else codeEditor.value = proj.code;
+          }
+          if (proj.breakpoints) {
+            state.breakpoints = new Set(proj.breakpoints);
+            if (editorInstance) {
+              editorInstance.clearGutter("breakpoints");
+              state.breakpoints.forEach(lineNo => {
+                const marker = document.createElement("div");
+                marker.className = "gutter-breakpoint";
+                marker.innerHTML = "🔴";
+                editorInstance.setGutterMarker(lineNo - 1, "breakpoints", marker);
+              });
+            }
+          }
+
+          document.querySelectorAll('.floating-note').forEach(n => n.remove());
+          state.notes = [];
+          if (proj.notes) {
+            proj.notes.forEach(n => createStickyNote(n.text, n.x, n.y, n.color));
+          }
+
+          document.getElementById('arrayInput').value = state.arr.join(', ');
+          state.selectedPointer = Object.keys(state.pointers)[0] || null;
+
+          saveSnapshot("Import Project from file");
+          renderBoard();
+          logStep("📂 প্রজেক্ট সফলভাবে লোড হয়েছে!");
+        } catch (err) {
+          alert("অবৈধ প্রজেক্ট ফাইল!");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /**
+     * Init & Event Listeners
+     */
+    window.addEventListener('DOMContentLoaded', () => {
+      saveSnapshot("Initial State");
+      renderBoard();
+
+      // Initialize CodeMirror IDE for rich syntax highlighting and editing
+      if (window.CodeMirror) {
+        // Line moving and duplicating helper functions for CodeMirror
+        function moveLineUp(cm) {
+          const doc = cm.getDoc();
+          const cursor = doc.getCursor();
+          if (cursor.line === 0) return;
+          const curLineText = doc.getLine(cursor.line);
+          const prevLineText = doc.getLine(cursor.line - 1);
+          cm.operation(() => {
+            doc.replaceRange(curLineText, { line: cursor.line - 1, ch: 0 }, { line: cursor.line - 1, ch: prevLineText.length });
+            doc.replaceRange(prevLineText, { line: cursor.line, ch: 0 }, { line: cursor.line, ch: curLineText.length });
+            doc.setCursor({ line: cursor.line - 1, ch: cursor.ch });
+          });
+        }
+
+        function moveLineDown(cm) {
+          const doc = cm.getDoc();
+          const cursor = doc.getCursor();
+          if (cursor.line >= doc.lineCount() - 1) return;
+          const curLineText = doc.getLine(cursor.line);
+          const nextLineText = doc.getLine(cursor.line + 1);
+          cm.operation(() => {
+            doc.replaceRange(nextLineText, { line: cursor.line, ch: 0 }, { line: cursor.line, ch: curLineText.length });
+            doc.replaceRange(curLineText, { line: cursor.line + 1, ch: 0 }, { line: cursor.line + 1, ch: nextLineText.length });
+            doc.setCursor({ line: cursor.line + 1, ch: cursor.ch });
+          });
+        }
+
+        function duplicateLineDown(cm) {
+          const doc = cm.getDoc();
+          const cursor = doc.getCursor();
+          const lineText = doc.getLine(cursor.line);
+          cm.operation(() => {
+            doc.replaceRange('\n' + lineText, { line: cursor.line, ch: lineText.length });
+            doc.setCursor({ line: cursor.line + 1, ch: cursor.ch });
+          });
+        }
+
+        function duplicateLineUp(cm) {
+          const doc = cm.getDoc();
+          const cursor = doc.getCursor();
+          const lineText = doc.getLine(cursor.line);
+          cm.operation(() => {
+            doc.replaceRange(lineText + '\n', { line: cursor.line, ch: 0 });
+            doc.setCursor({ line: cursor.line, ch: cursor.ch });
+          });
+        }
+
+        editorInstance = CodeMirror.fromTextArea(codeEditor, {
+          mode: 'javascript',
+          theme: 'dracula',
+          lineNumbers: true,
+          gutters: ["CodeMirror-linenumbers", "breakpoints"],
+          matchBrackets: true,
+          autoCloseBrackets: true,
+          highlightSelectionMatches: {
+            showToken: /\w/,
+            annotateScrollbar: false,
+            delay: 100,
+            wordsOnly: true
+          },
+          tabSize: 2,
+          indentUnit: 2,
+          lineWrapping: true,
+          extraKeys: {
+            "Tab": (cm) => {
+              if (cm.somethingSelected()) cm.indentSelection("add");
+              else cm.replaceSelection("  ", "end");
+            },
+            "Shift-Tab": (cm) => cm.indentSelection("subtract"),
+            "Ctrl-/": (cm) => cm.toggleComment(),
+            "Cmd-/": (cm) => cm.toggleComment(),
+            "Ctrl-F": "findPersistent",
+            "Cmd-F": "findPersistent",
+            "Ctrl-H": "replace",
+            "Cmd-H": "replace",
+            "Shift-Ctrl-F": "replace",
+            "Shift-Ctrl-R": "replaceAll",
+            "Alt-Up": moveLineUp,
+            "Alt-Down": moveLineDown,
+            "Shift-Alt-Down": duplicateLineDown,
+            "Shift-Alt-Up": duplicateLineUp,
+            "Ctrl-Enter": () => document.getElementById('btnRun').click()
+          }
+        });
+
+        // Toolbar Find and Replace buttons
+        const btnEditorFind = document.getElementById('btnEditorFind');
+        const btnEditorReplace = document.getElementById('btnEditorReplace');
+        if (btnEditorFind) {
+          btnEditorFind.addEventListener('click', () => {
+            if (editorInstance) {
+              editorInstance.execCommand("findPersistent");
+            }
+          });
+        }
+        if (btnEditorReplace) {
+          btnEditorReplace.addEventListener('click', () => {
+            if (editorInstance) {
+              editorInstance.execCommand("replace");
+            }
+          });
+        }
+
+        editorInstance.on("gutterClick", (cm, line) => {
+          const lineNo = line + 1;
+          const info = cm.lineInfo(line);
+          if (info.gutterMarkers && info.gutterMarkers.breakpoints) {
+            cm.setGutterMarker(line, "breakpoints", null);
+            state.breakpoints.delete(lineNo);
+            logStep(`⚪ ব্রেকপয়েন্ট রিমুভ করা হয়েছে: লাইন ${lineNo}`, 'generic');
+          } else {
+            const marker = document.createElement("div");
+            marker.className = "gutter-breakpoint";
+            marker.innerHTML = "🔴";
+            cm.setGutterMarker(line, "breakpoints", marker);
+            state.breakpoints.add(lineNo);
+            logStep(`🔴 ব্রেকপয়েন্ট সেট করা হয়েছে: লাইন ${lineNo}`, 'bp');
+          }
+        });
+
+        editorInstance.setSize("100%", "100%");
+      }
+
+      // Initial Sticky Note at Top-Right Corner summarizing the lab's core capabilities
+      const stageW = canvasStage ? canvasStage.clientWidth : window.innerWidth;
+      const initialNoteX = Math.max(100, stageW - 270);
+      createStickyNote(
+        "⚡ Array-Lab Visualizer:\n• পয়েন্টার ড্র্যাগ বা কীবোর্ড দিয়ে সরান\n• টাইম ট্রাভেল: প্রিভিয়াস ও নেক্সট স্টেপ\n• ফিজিক্স সোয়াপ আর্কিং এনিমেশন\n• রিয়েল ক্রোম দেবটুলস কনসোল REPL\n• থিংকিং ট্রিপ ও মেমোরি রেকর্ডার\n• 100% স্ট্যান্ড অ্যালোন ও অফলাইন",
+        initialNoteX, 16, "#fef08a"
+      );
+
+      // Human Thinking & Action Recorder Listeners
+      document.getElementById('btnRecordToggle').addEventListener('click', startRecording);
+      document.getElementById('btnRecordPause').addEventListener('click', togglePauseRecording);
+      document.getElementById('btnRecordStop').addEventListener('click', stopRecording);
+      document.getElementById('btnRecordExport').addEventListener('click', exportRecordedSession);
+
+      // Top Toolbar Listeners
+      document.getElementById('btnLoadArray').addEventListener('click', () => {
+        const raw = document.getElementById('arrayInput').value.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+        if (raw.length > 0) {
+          state.arr = raw;
+          saveSnapshot(`Load array of ${raw.length} elements`);
+          recordAction('load_array', { array: [...state.arr] }, `অ্যারে লোড করা হলো (${state.arr.length} টি উপাদান)`);
+          renderBoard();
+        }
+      });
+
+      // Array Creator Studio Logic
+      const arrayCreatorModal = document.getElementById('arrayCreatorModal');
+      const btnOpenArrayCreator = document.getElementById('btnOpenArrayCreator');
+      const btnCloseCreatorModal = document.getElementById('btnCloseCreatorModal');
+      const btnCancelCreatorModal = document.getElementById('btnCancelCreatorModal');
+      const btnApplyCreatedArray = document.getElementById('btnApplyCreatedArray');
+      const btnRegeneratePreview = document.getElementById('btnRegeneratePreview');
+      const creatorMode = document.getElementById('creatorMode');
+      const creatorTotalSize = document.getElementById('creatorTotalSize');
+      const creatorNumBlocks = document.getElementById('creatorNumBlocks');
+      const creatorBlockOrder = document.getElementById('creatorBlockOrder');
+      const creatorRangeType = document.getElementById('creatorRangeType');
+      const creatorMinVal = document.getElementById('creatorMinVal');
+      const creatorMaxVal = document.getElementById('creatorMaxVal');
+      const creatorRangePattern = document.getElementById('creatorRangePattern');
+      const creatorAllowDuplicates = document.getElementById('creatorAllowDuplicates');
+      const creatorReverse = document.getElementById('creatorReverse');
+      const creatorLivePreview = document.getElementById('creatorLivePreview');
+
+      // Range parser helper: converts "1-5, 7, 6, 10-12" to [1,2,3,4,5,7,6,10,11,12]
+      function parseCustomRange(str) {
+        const parts = str.split(',').map(s => s.trim()).filter(Boolean);
+        const result = [];
+        for (const part of parts) {
+          if (part.includes('-')) {
+            const match = part.match(/^(-?\d+)\s*-\s*(-?\d+)$/);
+            if (match) {
+              const start = parseInt(match[1], 10);
+              const end = parseInt(match[2], 10);
+              if (start <= end) {
+                for (let i = start; i <= end; i++) result.push(i);
+              } else {
+                for (let i = start; i >= end; i--) result.push(i);
+              }
+              continue;
+            }
+          }
+          const num = parseInt(part, 10);
+          if (!isNaN(num)) result.push(num);
+        }
+        return result;
+      }
+
+      // Helper to generate a single random value from chosen range definition
+      function getRandomFromDomain(pool, minVal, maxVal) {
+        if (pool && pool.length > 0) {
+          return pool[Math.floor(Math.random() * pool.length)];
+        }
+        return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
+      }
+
+      // Sorted blocks generator helper: creates totalSize partitioned into numBlocks, each block sorted
+      function generateSortedBlocks(totalSize, numBlocks, pool, minVal, maxVal, order, allowDup) {
+        const numB = Math.max(1, Math.min(numBlocks, totalSize));
+        const sizePerBlock = Math.floor(totalSize / numB);
+        const remainder = totalSize % numB;
+        const result = [];
+
+        for (let b = 0; b < numB; b++) {
+          const curBlockSize = sizePerBlock + (b < remainder ? 1 : 0);
+          const block = [];
+          const usedSet = new Set();
+          for (let i = 0; i < curBlockSize; i++) {
+            let val;
+            let attempts = 0;
+            do {
+              val = getRandomFromDomain(pool, minVal, maxVal);
+              attempts++;
+            } while (!allowDup && usedSet.has(val) && attempts < 200);
+            usedSet.add(val);
+            block.push(val);
+          }
+          if (order === 'asc') block.sort((a, b) => a - b);
+          else if (order === 'desc') block.sort((a, b) => b - a);
+          result.push(...block);
+        }
+        return result;
+      }
+
+      function generateArrayFromSettings() {
+        const mode = creatorMode.value;
+        const totalSize = Math.max(1, parseInt(creatorTotalSize.value, 10) || 16);
+        const numBlocks = Math.max(1, parseInt(creatorNumBlocks.value, 10) || 2);
+        const minVal = parseInt(creatorMinVal.value, 10) || 1;
+        const maxVal = parseInt(creatorMaxVal.value, 10) || 99;
+        const order = creatorBlockOrder.value;
+        const allowDup = creatorAllowDuplicates.checked;
+        const shouldReverse = creatorReverse.checked;
+        const isCustomSyntax = creatorRangeType.value === 'customSyntax';
+        const pool = isCustomSyntax ? parseCustomRange(creatorRangePattern.value) : null;
+
+        let generated = [];
+
+        if (mode === 'blocks') {
+          generated = generateSortedBlocks(totalSize, numBlocks, pool, minVal, maxVal, order, allowDup);
+        } else if (mode === 'random') {
+          const used = new Set();
+          for (let i = 0; i < totalSize; i++) {
+            let val;
+            let att = 0;
+            do {
+              val = getRandomFromDomain(pool, minVal, maxVal);
+              att++;
+            } while (!allowDup && used.has(val) && att < 200);
+            used.add(val);
+            generated.push(val);
+          }
+        } else if (mode === 'alreadySorted') {
+          const used = new Set();
+          for (let i = 0; i < totalSize; i++) {
+            let val;
+            let att = 0;
+            do {
+              val = getRandomFromDomain(pool, minVal, maxVal);
+              att++;
+            } while (!allowDup && used.has(val) && att < 200);
+            used.add(val);
+            generated.push(val);
+          }
+          generated.sort((a, b) => a - b);
+        } else if (mode === 'reverseSorted') {
+          const used = new Set();
+          for (let i = 0; i < totalSize; i++) {
+            let val;
+            let att = 0;
+            do {
+              val = getRandomFromDomain(pool, minVal, maxVal);
+              att++;
+            } while (!allowDup && used.has(val) && att < 200);
+            used.add(val);
+            generated.push(val);
+          }
+          generated.sort((a, b) => b - a);
+        } else if (mode === 'heavyDuplicates') {
+          // Pick a tiny subset of 3-4 unique values from domain
+          const distinctCount = Math.max(2, Math.min(4, Math.floor(totalSize / 4)));
+          const seedValues = [];
+          for (let i = 0; i < distinctCount; i++) {
+            seedValues.push(getRandomFromDomain(pool, minVal, maxVal));
+          }
+          for (let i = 0; i < totalSize; i++) {
+            generated.push(seedValues[Math.floor(Math.random() * seedValues.length)]);
+          }
+        } else if (mode === 'nearlySorted') {
+          for (let i = 0; i < totalSize; i++) {
+            generated.push(Math.floor(minVal + (i / totalSize) * (maxVal - minVal)));
+          }
+          // Introduce 1-2 minor inversions (95% sorted)
+          const swaps = Math.max(1, Math.floor(totalSize * 0.05));
+          for (let s = 0; s < swaps; s++) {
+            const i1 = Math.floor(Math.random() * (totalSize - 1));
+            const i2 = i1 + 1;
+            const temp = generated[i1];
+            generated[i1] = generated[i2];
+            generated[i2] = temp;
+          }
+        } else if (mode === 'sawtooth') {
+          const runs = Math.max(2, Math.floor(totalSize / 4));
+          const runLength = Math.ceil(totalSize / runs);
+          for (let r = 0; r < runs; r++) {
+            for (let i = 0; i < runLength && generated.length < totalSize; i++) {
+              generated.push(Math.floor(minVal + (i / runLength) * (maxVal - minVal)));
+            }
+          }
+        }
+
+        if (shouldReverse) {
+          generated.reverse();
+        }
+
+        return generated;
+      }
+
+      function updateCreatorUI() {
+        const mode = creatorMode.value;
+        const isCustomSyntax = creatorRangeType.value === 'customSyntax';
+        const minMaxRow = document.getElementById('creatorMinMaxRow');
+        const customSyntaxRow = document.getElementById('creatorCustomSyntaxRow');
+        const rangeHint = document.getElementById('creatorRangeHint');
+        const numBlocksGroup = document.getElementById('creatorNumBlocksGroup');
+        const blockOrderGroup = document.getElementById('creatorBlockOrderGroup');
+
+        if (isCustomSyntax) {
+          minMaxRow.style.display = 'none';
+          customSyntaxRow.style.display = 'block';
+          rangeHint.innerText = 'উপাদানসমূহ কাস্টম সিনট্যাক্সের সংখ্যাগুলো হতে নির্বাচন করা হবে।';
+        } else {
+          minMaxRow.style.display = 'flex';
+          customSyntaxRow.style.display = 'none';
+          rangeHint.innerText = 'উপাদানসমূহ Min এবং Max এর মধ্যবর্তী সংখ্যা হতে উৎপন্ন হবে।';
+        }
+
+        if (mode === 'blocks') {
+          numBlocksGroup.style.display = 'flex';
+          blockOrderGroup.style.display = 'flex';
+        } else {
+          numBlocksGroup.style.display = 'none';
+          blockOrderGroup.style.display = 'none';
+        }
+
+        const previewArr = generateArrayFromSettings();
+        creatorLivePreview.innerText = `[${previewArr.length} elements]: ${previewArr.join(', ')}`;
+      }
+
+      if (btnOpenArrayCreator) {
+        btnOpenArrayCreator.addEventListener('click', () => {
+          updateCreatorUI();
+          arrayCreatorModal.style.display = 'flex';
+        });
+      }
+
+      if (btnCloseCreatorModal) btnCloseCreatorModal.addEventListener('click', () => arrayCreatorModal.style.display = 'none');
+      if (btnCancelCreatorModal) btnCancelCreatorModal.addEventListener('click', () => arrayCreatorModal.style.display = 'none');
+      if (btnRegeneratePreview) btnRegeneratePreview.addEventListener('click', updateCreatorUI);
+
+      [creatorMode, creatorTotalSize, creatorNumBlocks, creatorBlockOrder, creatorMinVal, creatorMaxVal, creatorRangePattern, creatorAllowDuplicates, creatorReverse].forEach(el => {
+        if (el) {
+          el.addEventListener('input', updateCreatorUI);
+          el.addEventListener('change', updateCreatorUI);
+        }
+      });
+
+      if (btnApplyCreatedArray) {
+        btnApplyCreatedArray.addEventListener('click', () => {
+          const newArr = generateArrayFromSettings();
+          if (newArr.length > 0) {
+            state.arr = newArr;
+            document.getElementById('arrayInput').value = state.arr.join(', ');
+            saveSnapshot(`Create array (${newArr.length} elements, mode: ${creatorMode.value})`);
+            recordAction('create_array', { array: [...state.arr], mode: creatorMode.value }, `পারফেক্ট এরে তৈরি ও লোড করা হলো (${newArr.length} টি উপাদান)`);
+            renderBoard();
+            arrayCreatorModal.style.display = 'none';
+            logConsole(`✨ নতুন এরে তৈরি সফল! মোট উপাদান: ${newArr.length}`, 'success');
+          }
+        });
+      }
+
+      // Tab Switching: History Timeline vs Developer Console
+      const tabBtnTimeline = document.getElementById('tabBtnTimeline');
+      const tabBtnConsole = document.getElementById('tabBtnConsole');
+      const flowTimelinePane = document.getElementById('flowTimeline');
+      const consolePane = document.getElementById('consolePane');
+      const btnClearLogs = document.getElementById('btnClearLogs');
+
+      // Mobile / Tablet Drawer Tab Switching Logic
+      const mTabEditor = document.getElementById('mTabEditor');
+      const mTabTimeline = document.getElementById('mTabTimeline');
+      const mTabConsole = document.getElementById('mTabConsole');
+      const mBtnClearLogs = document.getElementById('mBtnClearLogs');
+
+      function activateDrawerTab(tabName) {
+        bottomDrawer.classList.remove('tab-editor', 'tab-timeline', 'tab-console');
+        bottomDrawer.classList.add(`tab-${tabName}`);
+
+        [mTabEditor, mTabTimeline, mTabConsole].forEach(b => b?.classList.remove('active'));
+
+        if (tabName === 'editor') {
+          if (mTabEditor) mTabEditor.classList.add('active');
+          // CodeMirror must refresh once the editor pane becomes visible again,
+          // otherwise it renders with zero size / stale layout on small screens.
+          if (editorInstance) {
+            editorInstance.refresh();
+            setTimeout(() => editorInstance.refresh(), 60);
+          }
+        } else if (tabName === 'timeline') {
+          if (mTabTimeline) mTabTimeline.classList.add('active');
+          tabBtnTimeline?.classList.add('active');
+          tabBtnConsole?.classList.remove('active');
+          flowTimelinePane.style.display = 'flex';
+          consolePane.style.display = 'none';
+        } else if (tabName === 'console') {
+          if (mTabConsole) mTabConsole.classList.add('active');
+          tabBtnConsole?.classList.add('active');
+          tabBtnTimeline?.classList.remove('active');
+          flowTimelinePane.style.display = 'none';
+          consolePane.style.display = 'flex';
+          setTimeout(() => consoleInput?.focus(), 60);
+        }
+      }
+
+      if (mTabEditor) mTabEditor.addEventListener('click', () => activateDrawerTab('editor'));
+      if (mTabTimeline) mTabTimeline.addEventListener('click', () => activateDrawerTab('timeline'));
+      if (mTabConsole) mTabConsole.addEventListener('click', () => activateDrawerTab('console'));
+      if (mBtnClearLogs) mBtnClearLogs.addEventListener('click', () => btnClearLogs?.click());
+
+      if (window.innerWidth <= 900) {
+        activateDrawerTab('editor');
+      }
+
+      window.addEventListener('resize', () => {
+        closeContextMenu();
+        if (window.innerWidth > 900) {
+          bottomDrawer.classList.remove('tab-editor', 'tab-timeline', 'tab-console');
+        } else if (!bottomDrawer.classList.contains('tab-editor') && !bottomDrawer.classList.contains('tab-timeline') && !bottomDrawer.classList.contains('tab-console')) {
+          activateDrawerTab('editor');
+        }
+        // Keep CodeMirror correctly sized after any viewport change
+        if (editorInstance) setTimeout(() => editorInstance.refresh(), 60);
+      });
+
+      if (tabBtnTimeline && tabBtnConsole) {
+        tabBtnTimeline.addEventListener('click', () => {
+          tabBtnTimeline.classList.add('active');
+          tabBtnConsole.classList.remove('active');
+          flowTimelinePane.style.display = 'flex';
+          consolePane.style.display = 'none';
+        });
+
+        tabBtnConsole.addEventListener('click', () => {
+          tabBtnConsole.classList.add('active');
+          tabBtnTimeline.classList.remove('active');
+          flowTimelinePane.style.display = 'none';
+          consolePane.style.display = 'flex';
+        });
+      }
+
+      function clearDevToolsConsole() {
+        const consoleLogs = document.getElementById('consoleLogs');
+        if (consoleLogs) {
+          // Remove ONLY the log lines. NEVER assign innerHTML here: the prompt line
+          // #consolePromptLine (which contains the #consoleInput) lives INSIDE #consoleLogs,
+          // so wiping innerHTML would destroy the console input and break typing/execution.
+          consoleLogs.querySelectorAll('.console-line').forEach(l => l.remove());
+          const promptLine = document.getElementById('consolePromptLine');
+          if (promptLine && promptLine.parentNode !== consoleLogs) {
+            consoleLogs.appendChild(promptLine); // re-anchor at the bottom if ever detached
+          }
+          const sys = document.createElement('div');
+          sys.className = 'console-line system';
+          sys.dataset.level = 'system';
+          sys.innerHTML = '<span class="console-time">[00:00]</span><span>⚡ Console cleared.</span>';
+          if (promptLine) consoleLogs.insertBefore(sys, promptLine);
+          else consoleLogs.appendChild(sys);
+          consoleLogs.scrollTop = consoleLogs.scrollHeight;
+        }
+        consoleEntryCount = 0;
+        const badge = document.getElementById('consoleCount');
+        if (badge) badge.innerText = 0;
+        const mBadge = document.getElementById('mConsoleCount');
+        if (mBadge) mBadge.innerText = 0;
+        // Keep the prompt usable: empty its text and keep it focused
+        const consoleInputEl = document.getElementById('consoleInput');
+        if (consoleInputEl) {
+          consoleInputEl.value = '';
+          consoleInputEl.focus();
+        }
+        filterConsoleLogs();
+      }
+
+      // Filter input & badges
+      const consoleFilterInput = document.getElementById('consoleFilterInput');
+      if (consoleFilterInput) {
+        consoleFilterInput.addEventListener('input', filterConsoleLogs);
+      }
+      document.querySelectorAll('.console-filter-badges .c-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+          document.querySelectorAll('.console-filter-badges .c-badge').forEach(b => b.classList.remove('active'));
+          badge.classList.add('active');
+          filterConsoleLogs();
+        });
+      });
+      const btnDevToolsClear = document.getElementById('btnDevToolsClear');
+      if (btnDevToolsClear) {
+        btnDevToolsClear.addEventListener('click', clearDevToolsConsole);
+      }
+
+      if (btnClearLogs) {
+        btnClearLogs.addEventListener('click', () => {
+          if (tabBtnConsole && tabBtnConsole.classList.contains('active')) {
+            clearDevToolsConsole();
+          } else {
+            flowTimelinePane.innerHTML = '<div class="flow-step-card"><span>🏁 OmniLab Pro প্রস্তুত। পয়েন্টার ড্র্যাগ করুন বা কোড রান করুন।</span></div>';
+            timelineEntryCount = 0;
+            const badge = document.getElementById('timelineCount');
+            if (badge) badge.innerText = 0;
+            const mBadge = document.getElementById('mTimelineCount');
+            if (mBadge) mBadge.innerText = 0;
+          }
+        });
+      }
+
+      document.getElementById('btnAddNote').addEventListener('click', () => {
+        const colors = ['#fef08a', '#bae6fd', '#bbf7d0', '#fbcfe8'];
+        createStickyNote("নতুন পর্যবেক্ষণ...", 120 + Math.random() * 80, 100 + Math.random() * 80, colors[Math.floor(Math.random() * colors.length)]);
+      });
+
+      document.getElementById('btnExport').addEventListener('click', exportProject);
+      document.getElementById('btnImport').addEventListener('click', () => document.getElementById('fileInput').click());
+      document.getElementById('fileInput').addEventListener('change', importProject);
+
+      // Interactive Real DevTools Console REPL & Execution Engine
+      const consoleInput = document.getElementById('consoleInput');
+      const consoleHistory = [];
+      let consoleHistoryIdx = -1;
+      let lastConsoleResult = undefined;
+
+      // DevTools REPL helper context
+      const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+
+      async function evaluateConsoleInput(code) {
+        const trimmed = code.trim();
+
+        // 1. Built-in clear / cls command (with or without parens)
+        if (/^(clear|cls)(\(\))?;?$/i.test(trimmed)) {
+          clearDevToolsConsole();
+          return;
+        }
+
+        // 2. Help command
+        if (/^help;?$/i.test(trimmed)) {
+          logConsole("🛠️ DevTools REPL Help:\n• 'arr' : বর্তমান এরে দেখুন\n• 'state' : পয়েন্টার ও স্টেট\n• 'console.table(arr)' : টেবিল ভিউ\n• 'clear' বা 'cls' : স্ক্রিন ক্লিয়ার\n• '$_' : সর্বশেষ এক্সপ্রেশনের মান\n• 'swap(0, 1)' : কার্ড সোয়াপ করুন\n• লুপ, ভ্যারিয়েবল ডিক্লেয়ারেশন বা ফাংশন সরাসরি রান করা যায়।", 'info');
+          return;
+        }
+
+        // Bind essentials into global window scope so expressions/assignments persist across commands
+        window.arr = state.arr;
+        window.state = state;
+        window.swap = swap;
+        window.compare = compare;
+        window.track = track;
+        window.renderBoard = renderBoard;
+        window.renderPointerTray = renderPointerTray;
+        window.saveSnapshot = saveSnapshot;
+        window.clear = clearDevToolsConsole;
+        window.cls = clearDevToolsConsole;
+        window.table = renderConsoleTable;
+        window.console = {
+          log: (...args) => args.length === 1 ? logConsole(args[0], 'log') : logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'log'),
+          info: (...args) => args.length === 1 ? logConsole(args[0], 'info') : logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'info'),
+          warn: (...args) => args.length === 1 ? logConsole(args[0], 'warn') : logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'warn'),
+          error: (...args) => args.length === 1 ? logConsole(args[0], 'error') : logConsole(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '), 'error'),
+          table: (data) => renderConsoleTable(data),
+          clear: () => clearDevToolsConsole()
+        };
+        window.$_ = lastConsoleResult;
+
+        const hasAwait = /\bawait\b/.test(trimmed);
+        let evalResult;
+        try {
+          if (hasAwait) {
+            // Direct async global evaluation
+            evalResult = await (0, eval)(`(async () => { return (${trimmed}); })()`);
+          } else {
+            // Attempt expression first, fall back to statement
+            try {
+              evalResult = (0, eval)(`(${trimmed})`);
+            } catch (exprErr) {
+              if (exprErr instanceof SyntaxError) {
+                evalResult = (0, eval)(trimmed);
+              } else {
+                throw exprErr;
+              }
+            }
+          }
+        } catch (err) {
+          throw err;
+        }
+
+        lastConsoleResult = evalResult;
+        window.$_ = evalResult;
+        logConsole(evalResult, 'result');
+
+        // Re-render board and pointer tray in case user modified arr or state
+        renderBoard();
+        renderPointerTray();
+      }
+
+      if (consoleInput) {
+        consoleInput.addEventListener('keydown', async (e) => {
+          if (e.key === 'Enter') {
+            const rawExpr = consoleInput.value.trim();
+            if (!rawExpr) return;
+
+            consoleHistory.push(rawExpr);
+            consoleHistoryIdx = consoleHistory.length;
+            consoleInput.value = '';
+
+            // Print evaluated expression command in console
+            logConsole(`> ${rawExpr}`, 'input');
+
+            // Evaluate expression in real DevTools REPL context
+            try {
+              await evaluateConsoleInput(rawExpr);
+            } catch (err) {
+              logConsole(`Uncaught ${err.name}: ${err.message}`, 'error');
+            }
+          } else if (e.key === 'ArrowUp') {
+            if (consoleHistoryIdx > 0) {
+              consoleHistoryIdx--;
+              consoleInput.value = consoleHistory[consoleHistoryIdx] || '';
+            }
+          } else if (e.key === 'ArrowDown') {
+            if (consoleHistoryIdx < consoleHistory.length - 1) {
+              consoleHistoryIdx++;
+              consoleInput.value = consoleHistory[consoleHistoryIdx] || '';
+            } else {
+              consoleHistoryIdx = consoleHistory.length;
+              consoleInput.value = '';
+            }
+          }
+        });
+      }
+
+      // Clicking anywhere inside consoleLogs focuses the in-stream prompt input
+      const consoleLogsElem = document.getElementById('consoleLogs');
+      if (consoleLogsElem && consoleInput) {
+        consoleLogsElem.addEventListener('click', (e) => {
+          if (!window.getSelection().toString() && e.target.tagName !== 'BUTTON') {
+            consoleInput.focus();
+          }
+        });
+      }
+
+      // Reset Array and Pointers Button (Restore Pre-run State)
+      const btnResetArrayPointers = document.getElementById('btnResetArrayPointers');
+      if (btnResetArrayPointers) {
+        btnResetArrayPointers.addEventListener('click', () => {
+          if (state.preRunSnapshot) {
+            state.arr = [...state.preRunSnapshot.arr];
+            state.pointers = JSON.parse(JSON.stringify(state.preRunSnapshot.pointers));
+            document.getElementById('arrayInput').value = state.arr.join(', ');
+            renderBoard();
+            renderPointerTray();
+            logConsole("🔄 এরে ও পয়েন্টারসমূহকে সফলভাবে পূর্ববর্তী অবস্থায় ফিরিয়ে আনা হয়েছে।", "success");
+            logStep("🔄 এরে ও পয়েন্টারসমূহকে রিস্টোর করা হয়েছে।");
+          } else {
+            // If no preRun snapshot yet, reload from arrayInput
+            document.getElementById('btnLoadArray').click();
+            logConsole("🔄 এরে ও পয়েন্টারসমূহ ফ্রেশ অবস্থায় রিলোড করা হয়েছে।", "success");
+          }
+        });
+      }
+
+      // Shortcuts Modal
+      const shortcutsModal = document.getElementById('shortcutsModal');
+      const btnShortcutsHelp = document.getElementById('btnShortcutsHelp');
+      const btnCloseShortcutsModal = document.getElementById('btnCloseShortcutsModal');
+
+      if (btnShortcutsHelp) {
+        btnShortcutsHelp.addEventListener('click', () => {
+          shortcutsModal.style.display = 'flex';
+        });
+      }
+      if (btnCloseShortcutsModal) {
+        btnCloseShortcutsModal.addEventListener('click', () => {
+          shortcutsModal.style.display = 'none';
+        });
+      }
+
+      // Custom Context Menu for Canvas Stage & Cards
+      const contextMenu = contextMenuEl || document.getElementById('customContextMenu');
+
+      // Close context menu on any global click (menu item handlers run first, then this hides it)
+      window.addEventListener('click', () => closeContextMenu());
+
+      // Strict Rule: Suppress the browser's default right-click menu on 100% of the app.
+      // Right-clicking a slot/card opens our custom menu; anywhere else just closes it.
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const slot = e.target && e.target.closest ? e.target.closest('.slot-cell') : null;
+        if (slot) {
+          showContextMenu(e.clientX, e.clientY, parseInt(slot.dataset.index, 10));
+        } else {
+          closeContextMenu();
+        }
+      });
+
+      // Context menu action bindings (every action closes the menu explicitly)
+      document.getElementById('ctxAddPointer').addEventListener('click', () => {
+        closeContextMenu();
+        if (contextTargetIndex !== null) {
+          openPointerEditModal();
+          document.getElementById('modalPtrIdx').value = contextTargetIndex;
+        }
+      });
+
+      document.getElementById('ctxEditValue').addEventListener('click', () => {
+        closeContextMenu();
+        if (contextTargetIndex !== null) {
+          const card = document.getElementById(`card-${contextTargetIndex}`);
+          if (card) {
+            const event = new MouseEvent('dblclick', { bubbles: true, cancelable: true });
+            card.dispatchEvent(event);
+          }
+        }
+      });
+
+      document.getElementById('ctxMoveSelectedHere').addEventListener('click', () => {
+        closeContextMenu();
+        // Use the selected pointer, falling back to the first pointer when none is selected
+        const pKey = (state.selectedPointer && state.pointers[state.selectedPointer])
+          ? state.selectedPointer
+          : Object.keys(state.pointers)[0];
+        if (contextTargetIndex !== null && pKey && state.pointers[pKey]) {
+          const fromIdx = state.pointers[pKey].index;
+          const toIdx = Math.max(0, Math.min(state.arr.length - 1, contextTargetIndex));
+          state.selectedPointer = pKey;
+          state.pointers[pKey].index = toIdx;
+          saveSnapshot(`Move pointer [${pKey}] -> index ${toIdx}`);
+          recordAction('pointer_move', { pointer: pKey, from: fromIdx, to: toIdx }, `পয়েন্টার [${pKey}] কে [${fromIdx}] থেকে [${toIdx}] এ সরানো হলো`);
+          renderBoard();
+          renderPointerTray();
+          logStep(`👉 পয়েন্টার [${state.pointers[pKey].varName || pKey}] কে ইনডেক্স [${toIdx}] এ নেওয়া হলো`);
+        }
+      });
+
+      document.getElementById('ctxResetPointers').addEventListener('click', () => {
+        closeContextMenu();
+        saveSnapshot('Reset all pointers to index 0');
+        Object.keys(state.pointers).forEach(p => {
+          state.pointers[p].index = 0;
+        });
+        renderBoard();
+        renderPointerTray();
+        logStep("🔄 সব পয়েন্টার ইনডেক্স ০-এ রিসেট করা হলো।");
+      });
+
+      // Pointer Modal
+      const modal = document.getElementById('ptrModal');
+      document.getElementById('btnCreatePointer').addEventListener('click', () => {
+        openPointerEditModal();
+      });
+      document.getElementById('btnCancelModal').addEventListener('click', () => modal.style.display = 'none');
+      document.getElementById('btnConfirmModal').addEventListener('click', () => {
+        const oldKey = document.getElementById('modalPtrOldName').value.trim();
+        const varName = document.getElementById('modalPtrName').value.trim();
+        const idx = parseInt(document.getElementById('modalPtrIdx').value, 10) || 0;
+        const fn = document.getElementById('modalPtrFn').value || null;
+
+        if (varName) {
+          const newKey = getPointerKey(varName, fn);
+          if (oldKey && oldKey !== newKey) {
+            delete state.pointers[oldKey];
+          }
+          const color = state.pointers[oldKey]?.color || state.pointers[newKey]?.color || PALETTE[Object.keys(state.pointers).length % PALETTE.length];
+          state.pointers[newKey] = {
+            index: Math.max(0, Math.min(idx, state.arr.length - 1)),
+            color,
+            fn,
+            varName
+          };
+          state.selectedPointer = newKey;
+          modal.style.display = 'none';
+          document.getElementById('modalPtrName').value = '';
+          saveSnapshot(`Configure pointer [${varName}${fn ? ' @' + fn : ''}]`);
+          recordAction('create_pointer', { pointer: newKey, varName, index: idx, fn }, `পয়েন্টার সংরক্ষিত: [${varName}] (ইনডেক্স ${idx}, স্কোপ: ${fn || 'Global'})`);
+          renderBoard();
+          renderPointerTray();
+        }
+      });
+
+      // Form Modal Keyboard Support: Enter submits, Escape cancels & closes.
+      // Bound at the MODAL level so it works from ANY field inside the dialog
+      // (text inputs, number inputs, selects, checkboxes) — not just the ones we remember to list.
+      function bindModalKeys(modalEl, submitBtnId, cancelBtnId) {
+        if (!modalEl) return;
+        modalEl.addEventListener('keydown', (e) => {
+          const t = e.target;
+          if (!t || !t.tagName) return;
+          const tag = t.tagName;
+          const isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable;
+          if (e.key === 'Enter' && isField && !e.shiftKey) {
+            // Let checkboxes/radios toggle natively and buttons receive their native Enter-click
+            if (tag === 'INPUT' && (t.type === 'checkbox' || t.type === 'radio')) return;
+            if (tag === 'BUTTON') return;
+            e.preventDefault();
+            e.stopPropagation();
+            if (submitBtnId) document.getElementById(submitBtnId)?.click();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (cancelBtnId) document.getElementById(cancelBtnId)?.click();
+            else modalEl.style.display = 'none';
+          }
+        });
+      }
+      bindModalKeys(document.getElementById('ptrModal'), 'btnConfirmModal', 'btnCancelModal');
+      bindModalKeys(document.getElementById('arrayCreatorModal'), 'btnApplyCreatedArray', 'btnCancelCreatorModal');
+      bindModalKeys(document.getElementById('shortcutsModal'), null, 'btnCloseShortcutsModal');
+
+      // Top Array Input Box: Enter loads the array immediately
+      const arrayInput = document.getElementById('arrayInput');
+      if (arrayInput) {
+        arrayInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('btnLoadArray')?.click();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            arrayInput.blur();
+          }
+        });
+      }
+
+      // Run/Pause toggle helper: Space and F5 both use this
+      function toggleRunPause() {
+        if (state.isRunning && !state.isPaused) {
+          document.getElementById('btnPause')?.click();
+        } else {
+          document.getElementById('btnRun')?.click();
+        }
+      }
+
+      // Comprehensive Global Keyboard Controls & Focus Shortcuts
+      window.addEventListener('keydown', (e) => {
+        const t = e.target;
+        const tag = t && t.tagName ? t.tagName : '';
+        const inPlainField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable);
+        const inCodeMirror = !!(t && t.closest && t.closest('.CodeMirror'));
+        const inTextField = inPlainField || inCodeMirror;
+        const mod = e.ctrlKey || e.metaKey;
+
+        // Universal Escape: closes any open modal, the custom context menu, and overlays
+        if (e.key === 'Escape') {
+          closeContextMenu();
+          document.querySelectorAll('.modal-overlay').forEach(m => { m.style.display = 'none'; });
+          e.preventDefault();
+          return;
+        }
+
+        // ---- Focus shortcuts: work reliably even while focus is inside a field ----
+        // 1. Focus Code Editor: Alt + E or F2
+        if ((e.altKey && !mod && e.key.toLowerCase() === 'e') || e.key === 'F2') {
+          e.preventDefault();
+          if (window.innerWidth <= 900) activateDrawerTab('editor');
+          if (editorInstance) editorInstance.focus();
+          else codeEditor.focus();
+          return;
+        }
+        // 2. Focus Canvas / Playground: Alt + C or F3
+        if ((e.altKey && !mod && e.key.toLowerCase() === 'c') || e.key === 'F3') {
+          e.preventDefault();
+          document.getElementById('boardViewport')?.focus();
+          return;
+        }
+        // 3. Focus Console REPL: Alt + K or Ctrl/Cmd + ` (backtick)
+        if ((e.altKey && !mod && e.key.toLowerCase() === 'k') || (mod && e.key === '`')) {
+          e.preventDefault();
+          if (window.innerWidth <= 900) activateDrawerTab('console');
+          else tabBtnConsole?.click();
+          document.getElementById('consoleInput')?.focus();
+          return;
+        }
+
+        // Run from the code editor: Ctrl/Cmd + Enter (allowed in CodeMirror, not in plain fields)
+        if (mod && e.key === 'Enter' && !inPlainField) {
+          e.preventDefault();
+          document.getElementById('btnRun')?.click();
+          return;
+        }
+
+        // While typing inside an input/select/textarea/CodeMirror, leave keys to the field
+        // (native typing, native undo/redo, CodeMirror editing) — no playground shortcuts.
+        if (inTextField) return;
+
+        // Focused buttons keep their native Space/Enter activation
+        if (tag === 'BUTTON' && (e.key === ' ' || e.key === 'Enter')) return;
+
+        // ---- Execution & Animation shortcuts ----
+        // Run/Pause toggle: Space or F5
+        if (e.key === ' ' || e.code === 'Space' || (e.key === 'F5' && !e.shiftKey)) {
+          e.preventDefault();
+          toggleRunPause();
+          return;
+        }
+        // Stop: Shift + F5
+        if (e.key === 'F5' && e.shiftKey) {
+          e.preventDefault();
+          document.getElementById('btnStop')?.click();
+          return;
+        }
+        // Step Forward: F10, Ctrl/Cmd + . or ']'
+        if (e.key === 'F10' || (mod && e.key === '.') || e.key === ']') {
+          e.preventDefault();
+          document.getElementById('btnStep')?.click();
+          return;
+        }
+        // Step Backward (Time Travel): F9, Ctrl/Cmd + , or '['
+        if (e.key === 'F9' || (mod && e.key === ',') || e.key === '[') {
+          e.preventDefault();
+          document.getElementById('btnStepBack')?.click();
+          return;
+        }
+        // Undo / Redo (app-level history; text-field undo stays native above)
+        if (mod && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+          e.preventDefault();
+          undo();
+          return;
+        }
+        if (mod && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+          e.preventDefault();
+          redo();
+          return;
+        }
+        // Pointer nudge & delete (plain keys, no modifiers)
+        if (!e.altKey && !mod) {
+          if (e.key === 'ArrowRight' && state.selectedPointer) {
+            e.preventDefault();
+            movePointerRelative(state.selectedPointer, 1);
+          } else if (e.key === 'ArrowLeft' && state.selectedPointer) {
+            e.preventDefault();
+            movePointerRelative(state.selectedPointer, -1);
+          } else if (e.key === 'Delete' && state.selectedPointer) {
+            e.preventDefault();
+            deletePointer(state.selectedPointer);
+          }
+        }
+      });
+
+      // Undo / Redo
+      document.getElementById('btnUndo').addEventListener('click', undo);
+      document.getElementById('btnRedo').addEventListener('click', redo);
+
+      function undo() {
+        if (state.history.length > 1) {
+          const cur = state.history.pop();
+          state.redoStack.push(cur);
+          const prev = state.history[state.history.length - 1];
+          state.arr = [...prev.arr];
+          state.pointers = JSON.parse(JSON.stringify(prev.pointers));
+          renderBoard();
+          renderPointerTray();
+          logStep(`↩️ Undo: ${cur.desc || 'Action'}`);
+        }
+      }
+
+      function redo() {
+        if (state.redoStack.length > 0) {
+          const next = state.redoStack.pop();
+          state.history.push(next);
+          state.arr = [...next.arr];
+          state.pointers = JSON.parse(JSON.stringify(next.pointers));
+          renderBoard();
+          renderPointerTray();
+          logStep(`↪️ Redo: ${next.desc || 'Action'}`);
+        }
+      }
+
+      // Stepper & Run Controls
+      document.getElementById('btnRun').addEventListener('click', () => {
+        if (state.isRunning && state.isPaused) {
+          state.isPaused = false;
+          if (state.stepResolver) {
+            const resolve = state.stepResolver;
+            state.stepResolver = null;
+            resolve();
+          }
+          logStep("▶️ এক্সিকিউশন পুনরায় চালু হয়েছে...");
+          return;
+        }
+        runScript();
+      });
+
+      document.getElementById('btnPause').addEventListener('click', () => {
+        state.isPaused = true;
+        logStep("⏸️ পজ করা হয়েছে। 'এক স্টেপ' বা 'রান' চাপুন।");
+      });
+
+      document.getElementById('btnStep').addEventListener('click', () => {
+        if (!state.isRunning) {
+          state.isPaused = true;
+          runScript();
+        } else if (state.stepResolver) {
+          state.isPaused = true;
+          const resolve = state.stepResolver;
+          state.stepResolver = null;
+          resolve();
+        } else {
+          state.isPaused = true;
+        }
+      });
+
+      // Backward Stepper (Time Travel Debugging with Reverse Physical Glide)
+      const btnStepBack = document.getElementById('btnStepBack');
+      if (btnStepBack) {
+        btnStepBack.addEventListener('click', async () => {
+          state.isPaused = true;
+          if (state.history.length > 1) {
+            const cur = state.history.pop();
+            state.redoStack.push(cur);
+            const prev = state.history[state.history.length - 1];
+
+            // Detect if a swap happened between prev and cur
+            const changed = [];
+            for (let k = 0; k < state.arr.length; k++) {
+              if (cur.arr[k] !== prev.arr[k]) {
+                changed.push(k);
+              }
+            }
+
+            if (changed.length === 2) {
+              const [i, j] = changed;
+              const cardA = document.getElementById(`card-${i}`);
+              const cardB = document.getElementById(`card-${j}`);
+              if (cardA && cardB) {
+                const rectA = cardA.getBoundingClientRect();
+                const rectB = cardB.getBoundingClientRect();
+                const deltaX = rectB.left - rectA.left;
+                const animDuration = state.swapDurationMs || Math.min(380, Math.max(160, state.delayMs * 0.65));
+
+                cardA.style.transition = `transform ${animDuration}ms cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow ${animDuration}ms ease, border-color ${animDuration}ms ease`;
+                cardB.style.transition = `transform ${animDuration}ms cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow ${animDuration}ms ease, border-color ${animDuration}ms ease`;
+
+                cardA.style.zIndex = '35';
+                cardB.style.zIndex = '34';
+                cardA.style.borderColor = '#fb7185';
+                cardB.style.borderColor = '#38bdf8';
+                cardA.style.boxShadow = '0 10px 26px rgba(251, 113, 133, 0.7)';
+                cardB.style.boxShadow = '0 10px 26px rgba(56, 189, 248, 0.7)';
+
+                // Reverse glide: cards smoothly glide back into previous positions!
+                cardA.style.transform = `translate(${deltaX}px, 14px) scale(1.12)`;
+                cardB.style.transform = `translate(${-deltaX}px, -18px) scale(1.12)`;
+
+                await sleep(animDuration);
+              }
+            }
+
+            state.arr = [...prev.arr];
+            state.pointers = JSON.parse(JSON.stringify(prev.pointers));
+            if (prev.lineNo) highlightExecLine(prev.lineNo);
+            renderBoard();
+            renderPointerTray();
+
+            if (changed.length === 2) {
+              const [i, j] = changed;
+              const cA = document.getElementById(`card-${i}`);
+              const cB = document.getElementById(`card-${j}`);
+              if (cA) cA.classList.add('landing-pulse');
+              if (cB) cB.classList.add('landing-pulse');
+              setTimeout(() => {
+                if (cA) cA.classList.remove('landing-pulse');
+                if (cB) cB.classList.remove('landing-pulse');
+              }, 260);
+            }
+
+            logStep(`⏮️ টাইম ট্রাভেল: পূর্বের স্টেপ (লাইন ${prev.lineNo || '?'}) এ ফিরে যাওয়া হলো`, 'generic');
+          } else {
+            logStep("⚠️ আর পিছনের কোনো এক্সিকিউশন স্টেপ অবশিষ্ট নেই!", "warn");
+          }
+        });
+      }
+
+      document.getElementById('btnStop').addEventListener('click', () => {
+        state.isRunning = false;
+        state.isPaused = false;
+        if (state.stepResolver) {
+          state.stepResolver();
+          state.stepResolver = null;
+        }
+        highlightExecLine(null);
+        logStep("⏹️ এক্সিকিউশন স্টপ করা হয়েছে।");
+      });
+
+      speedSlider.addEventListener('input', (e) => {
+        state.delayMs = parseInt(e.target.value, 10);
+      });
+
+      const swapSpeedSlider = document.getElementById('swapSpeedSlider');
+      const swapSpeedVal = document.getElementById('swapSpeedVal');
+      if (swapSpeedSlider) {
+        swapSpeedSlider.addEventListener('input', (e) => {
+          state.swapDurationMs = parseInt(e.target.value, 10);
+          if (swapSpeedVal) swapSpeedVal.innerText = `${state.swapDurationMs}ms`;
+        });
+      }
+
+      // Code Templates (Pure Standard Code with Zero-Boilerplate)
+      function setEditorValue(val) {
+        if (editorInstance) editorInstance.setValue(val);
+        else codeEditor.value = val;
+      }
+
+      document.getElementById('btnTemplateBubble').addEventListener('click', () => {
+        setEditorValue(`// 🚀 সাধারণ বাবল সর্ট (কোনো helper কল লাগবে না!)
+let n = arr.length;
+for (let i = 0; i < n - 1; i++) {
+  for (let j = 0; j < n - i - 1; j++) {
+    if (arr[j] > arr[j + 1]) {
+      let temp = arr[j];
+      arr[j] = arr[j + 1];
+      arr[j + 1] = temp;
+    }
+  }
+}`);
+      });
+
+      document.getElementById('btnTemplateSelect').addEventListener('click', () => {
+        setEditorValue(`// 🎯 সিলেকশন সর্ট (মিনিমাম ইনডেক্স ও সোয়াপ)
+let n = arr.length;
+for (let i = 0; i < n - 1; i++) {
+  let minIdx = i;
+  for (let j = i + 1; j < n; j++) {
+    if (arr[j] < arr[minIdx]) {
+      minIdx = j;
+    }
+  }
+  if (minIdx !== i) {
+    swap(i, minIdx);
+  }
+}`);
+      });
+
+      document.getElementById('btnTemplateTwoPtr').addEventListener('click', () => {
+        setEditorValue(`// ⚡ টু-পয়েন্টার পার্টিশন (Cloud / Two-Pointer)
+let mid = Math.floor((arr.length - 1) / 2);
+let lp = 0, rp = mid + 1;
+
+while (lp <= mid && rp < arr.length) {
+  if (arr[lp] > arr[rp]) {
+    swap(lp, rp);
+    rp++;
+  } else {
+    lp++;
+  }
+}`);
+      });
+
+      // Toggle Drawer
+      document.getElementById('btnToggleDrawer').addEventListener('click', () => {
+        document.getElementById('bottomDrawer').classList.toggle('collapsed');
+      });
+
+      // Splitter Resizing: Horizontal (Canvas vs Bottom IDE)
+      const resizerH = document.getElementById('resizerH');
+      // bottomDrawer is already declared in the top DOM-elements block above.
+      let isResizingH = false;
+      let startH = 0, startY = 0;
+
+      resizerH.addEventListener('mousedown', (e) => {
+        isResizingH = true;
+        startY = e.clientY;
+        startH = bottomDrawer.getBoundingClientRect().height;
+        resizerH.classList.add('resizing');
+        document.body.style.cursor = 'row-resize';
+        document.body.style.userSelect = 'none';
+      });
+
+      // Splitter Resizing: Vertical (IDE vs History)
+      const resizerV = document.getElementById('resizerV');
+      const ideSection = document.getElementById('ideSection');
+      let isResizingV = false;
+      let startW = 0, startX = 0;
+
+      resizerV.addEventListener('mousedown', (e) => {
+        isResizingV = true;
+        startX = e.clientX;
+        startW = ideSection.getBoundingClientRect().width;
+        resizerV.classList.add('resizing');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (isResizingH) {
+          const dy = startY - e.clientY;
+          const newHeight = Math.max(90, Math.min(window.innerHeight - 150, startH + dy));
+          bottomDrawer.style.height = `${newHeight}px`;
+          if (editorInstance) editorInstance.refresh();
+        } else if (isResizingV) {
+          const dx = e.clientX - startX;
+          const newWidth = Math.max(220, Math.min(bottomDrawer.getBoundingClientRect().width - 200, startW + dx));
+          ideSection.style.width = `${newWidth}px`;
+          ideSection.style.flex = 'none';
+          if (editorInstance) editorInstance.refresh();
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isResizingH || isResizingV) {
+          isResizingH = false;
+          isResizingV = false;
+          resizerH.classList.remove('resizing');
+          resizerV.classList.remove('resizing');
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+          if (editorInstance) editorInstance.refresh();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

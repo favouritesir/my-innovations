@@ -293,7 +293,7 @@ void artificial_merge(int arr[], int l, int mid, int r) {
         } else {
             int cand_A = arr[ap];
             bool has_B = (rp <= r);
-            int cand_B = has_B ? arr[rp] : 0;
+            int cand_B = has_B ? arr[rp] : INT_MAX;
 
             if (arr[lp] <= cand_A && (!has_B || arr[lp] <= cand_B)) {
                 lp++;
